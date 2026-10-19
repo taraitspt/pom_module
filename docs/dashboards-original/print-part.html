@@ -1,0 +1,1702 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<body>
+
+<style>
+  :root{
+    color-scheme: light;
+    /* ---- 생산운영팀 대시보드와 동일한 디자인 토큰 ---- */
+    --brand:#17A2B8; --brand-50:#F1FAFB; --brand-100:#E3F4F7; --brand-600:#0F8A9E; --brand-700:#0B6F80;
+    --gray-50:#f7f8fa; --gray-100:#eef0f3; --gray-200:#dfe3e8; --gray-300:#c5ccd3; --gray-500:#7b8794; --gray-700:#4b5563; --gray-900:#111827;
+    --bg:#f4f6f8; --panel:#ffffff; --surface-2:var(--gray-50);
+    --text:var(--gray-900); --text-2:var(--gray-700); --muted:var(--gray-500);
+    --line:rgba(16,24,40,.08); --line-2:var(--gray-100); --line-strong:rgba(16,24,40,.14);
+    --good:#1F7A4D; --good-bg:#EAF6EE; --warn:#9A6700; --warn-bg:#FFF5DB; --crit:#B42318; --crit-bg:#FDECEA;
+    --s1:#17A2B8; --s2:#E8630B; --s3:#7B4EA0; --s4:#0F9D63; --s5:#D0342A; --s6:#C2870A; --s7:#1F5C99; --s8:#D9569A;
+    --sidebar-w:232px; --topbar-h:52px;
+    --shadow:0 1px 2px rgba(16,24,40,.04), 0 1px 3px rgba(16,24,40,.06);
+    /* ---- 기존 클래스 호환용 별칭(값만 새 토큰으로 교체, 이름은 유지) ---- */
+    --page-1:#eef3f5; --page-2:#e7eef1;
+    --ink-1:var(--text); --ink-2:var(--text-2); --ink-muted:var(--muted);
+    --card:var(--panel); --border:var(--line); --grid:var(--gray-100);
+    --teal:var(--brand); --teal-dark:var(--brand-700);
+    --cream:#fdecc9; --cream-num:#b9741a;
+    --blue:#1F5C99; --orange:#E8630B; --aqua:#0F9D63; --purple:#7B4EA0; --pink:#D9569A;
+    --warning:var(--warn); --warning-bg:var(--warn-bg);
+    --danger:var(--crit); --danger-bg:var(--crit-bg);
+    --info:#1F5C99; --info-bg:#e8f0fb;
+  }
+  *{box-sizing:border-box;}
+  html, body{height:100%; margin:0;}
+  body{
+    color:var(--text); background:var(--bg);
+    font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
+    font-size:13px; line-height:1.55; -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{margin:0; font-weight:700; letter-spacing:-.01em;}
+  .shell, .layout{display:flex; height:100vh; overflow:hidden;}
+
+  /* ---------- 사이드바 ---------- */
+  .sidebar{width:var(--sidebar-w); flex:0 0 auto; background:var(--panel); border-right:1px solid var(--line); display:flex; flex-direction:column; padding:14px 12px 0;}
+  /* 브랜드 블록 — tara-portal.css(UI 키트)와 동일: 로고(118px) 위, 제목·팀명 아래로 세로 적층 */
+  .sidebar-logo, .side-logo{display:block; padding:2px 6px 14px; margin-bottom:0;}
+  .side-logo img, .brand-img{display:block; width:118px; height:auto; margin-bottom:2px;}
+  .brand-title{margin-top:14px; font-size:14px; font-weight:700; letter-spacing:-.28px; color:var(--text);}
+  .brand-team{font-size:11px; color:var(--muted); margin-top:2px;}
+  .nav{flex:1; overflow-y:auto; padding:0 0 16px;}
+  .nav::-webkit-scrollbar{width:6px;}
+  .nav::-webkit-scrollbar-thumb{background:#dfe3e6; border-radius:3px;}
+  .nav-section{margin:0; padding:12px 10px 6px; font-size:11px; font-weight:600; color:var(--muted); letter-spacing:.04em;}
+  .side-nav, .nav-items{display:block;}
+  .nav-item, .side-nav button{display:flex; align-items:center; gap:10px; padding:8px 10px; margin-bottom:1px; border-radius:10px; color:var(--text-2); font-size:13px; font-weight:500; cursor:pointer; border:0; background:none; width:100%; text-align:left; letter-spacing:-.13px; text-decoration:none; font-family:inherit; line-height:1.55;}
+  .nav-item:hover, .side-nav button:hover:not(.active){background:var(--surface-2); color:var(--text);}
+  .nav-item:hover i.ti{color:var(--text-2);}
+  .nav-item.active, .side-nav button.active{background:var(--brand-100); color:var(--brand-700); font-weight:600;}
+  .nav-item i.ti, .side-nav button i.ti{font-size:16px; width:18px; flex:0 0 auto; color:var(--muted); text-align:center;}
+  .nav-item.active i.ti, .side-nav button.active i.ti{color:var(--brand-700);}
+  .nav-item .ext{margin-left:auto; font-size:11px; color:var(--muted);}
+  .side-foot, .build-stamp{margin-top:auto; padding:10px 10px 16px; font-size:10.5px; color:var(--muted); line-height:1.7; border-top:1px solid var(--line-2); text-align:left;}
+  .side-foot b{color:var(--text-2);}
+
+  /* ---------- 상단바 ---------- */
+  .main{flex:1; display:flex; flex-direction:column; min-width:0;}
+  .topbar{height:var(--topbar-h); flex:0 0 auto; background:var(--panel); border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; padding:0 22px; gap:16px;}
+  .crumbs{display:flex; align-items:center; gap:7px; color:var(--muted); font-size:12.5px;}
+  .crumbs strong{color:var(--text); font-weight:600;}
+  .topbar-right{display:flex; align-items:center; gap:14px;}
+  .tb-search{display:flex; align-items:center; gap:6px; background:var(--surface-2); border:1px solid var(--line); border-radius:999px; padding:5px 12px; color:var(--muted);}
+  .tb-search input{border:0; background:none; outline:none; font-size:12.5px; color:var(--text); width:120px;}
+  .tb-search svg{width:14px; height:14px; flex:none;}
+  .um{position:relative;}
+  .um summary{list-style:none; display:flex; align-items:center; gap:8px; cursor:pointer; font-size:12.5px; color:var(--text-2);}
+  .um summary::-webkit-details-marker{display:none;}
+  .um-av{width:26px; height:26px; border-radius:50%; background:var(--brand-100); color:var(--brand-700); display:grid; place-items:center; font-size:12px; font-weight:700;}
+  .um-nm{font-weight:600; color:var(--text);}
+  .um-pop{position:absolute; right:0; top:36px; background:var(--panel); border:1px solid var(--line); border-radius:12px; box-shadow:0 8px 24px rgba(16,24,40,.12); padding:10px; min-width:170px; z-index:20;}
+  .um-hd{padding:4px 8px 8px; border-bottom:1px solid var(--line-2); margin-bottom:6px;}
+  .um-hd small{display:block; color:var(--muted); font-size:11px; margin-top:2px;}
+  .um-pop a{display:flex; align-items:center; gap:8px; padding:7px 8px; border-radius:8px; font-size:12.5px; color:var(--text-2);}
+  .um-pop a:hover{background:var(--surface-2); color:var(--text);}
+
+  .content{flex:1; overflow:auto;}
+  .page{max-width:1280px; padding:18px 20px 48px;}
+  .main .page-title, .page-head h1{font-size:20px; font-weight:700; letter-spacing:-.4px; margin:4px 0 14px; display:flex; align-items:baseline; gap:10px;}
+  .page-head h1 .sub{font-size:13px; font-weight:500; color:var(--muted);}
+  .tabpanel[hidden]{display:none;}
+
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:12px; box-shadow:none; margin-bottom:12px; overflow:hidden; padding:0;}
+  .card-head{padding:16px 18px 0; margin-bottom:12px; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+  .card-head h2, h2.sec-title{font-size:14px; font-weight:600; letter-spacing:-.14px; margin:0; display:flex; align-items:baseline; gap:8px;}
+  .card-head .desc{margin:3px 0 0; font-size:11.5px; color:var(--muted);}
+  .card-body{padding:0 18px 16px;}
+  .card-body.tight{padding:0;}
+  .note{color:var(--muted); font-size:11px; margin-top:12px; padding:0 18px 16px; line-height:1.65;}
+  .card-body + .note, .card > .note{padding:0 18px 16px;}
+
+  /* ---------- 공지사항 ---------- */
+  .notice-card{background:linear-gradient(135deg, var(--brand-50), var(--panel)); padding:12px 16px; border:1px solid var(--line); border-radius:12px; margin-bottom:14px;}
+  .notice-heading{font-size:16px; font-weight:800; letter-spacing:-.01em; color:var(--text); margin:0 0 8px;}
+  .notice-grid, .notice-strip{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  @media (max-width:640px){ .notice-grid, .notice-strip{grid-template-columns:1fr;} }
+  .notice-item, .notice{display:flex; gap:8px; padding:7px 12px; background:var(--warn-bg); border-radius:9px; align-items:flex-start;}
+  .notice-item .num, .notice .n{font-weight:700; color:var(--warn); flex:none; font-size:13px;}
+  .notice-item .n1{margin:0; font-size:12.5px; font-weight:700; color:var(--text); line-height:1.35;}
+  .notice-item .n2{font-weight:400; font-size:11px; color:var(--muted); margin-top:2px; line-height:1.3;}
+
+  /* ---------- 핵심 현황(통계 타일) ---------- */
+  .stat-row, .stats{display:grid; grid-template-columns:repeat(auto-fit, minmax(190px,1fr)); gap:14px; margin-bottom:20px;}
+  .stat-card, .stat{border:1px solid var(--line); border-radius:12px; padding:15px 17px; background:var(--panel); cursor:pointer; box-shadow:none;}
+  .stat-card:hover, .stat:hover{transform:translateY(-2px);}
+  .stat-card .head, .stat .label{display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--text-2); font-weight:600;}
+  .stat-card .head::before, .stat .label::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--muted);}
+  .stat-card.c-teal .head::before, .stat.g .label::before{background:var(--good);}
+  .stat-card.c-orange .head::before, .stat.a .label::before{background:var(--warn);}
+  .stat-card.c-pink .head::before, .stat.r .label::before{background:var(--crit);}
+  .stat-card.c-blue .head::before, .stat.b .label::before{background:var(--blue);}
+  .stat-card .ic{display:none;}
+  .stat-card .big, .stat .num{font-size:29px; font-weight:700; letter-spacing:-.02em; margin-top:6px; line-height:1.1;}
+  .stat-card .big small, .stat .num small{font-size:13px; font-weight:500; color:var(--muted); margin-left:3px;}
+  .stat-card .sub, .stat .foot{font-size:11.5px; color:var(--muted); margin-top:5px;}
+
+  /* ---------- KPI 타일 ---------- */
+  .kpi-row, .kpis{display:grid; grid-template-columns:repeat(4,1fr); gap:13px; margin-bottom:8px;}
+  .kpi-row.compact, .kpis-5{grid-template-columns:repeat(5,1fr); gap:10px;}
+  @media (max-width:1200px){ .kpi-row.compact, .kpis-5{grid-template-columns:repeat(3,1fr);} }
+  @media (max-width:700px){ .kpi-row.compact, .kpis-5{grid-template-columns:repeat(2,1fr);} }
+  .kpi-card, .kpi{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:15px 17px; box-shadow:none; position:relative; overflow:hidden; cursor:pointer; transition:border-color .12s;}
+  .kpi-card::after, .kpi::after{content:""; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--metric-color, var(--c, var(--line)));}
+  .kpi-card:hover, .kpi:hover{border-color:var(--brand-100);}
+  .kpi-card.selected{border-color:var(--metric-color, var(--brand));}
+  .kpi-card.disabled{cursor:default; opacity:.6;}
+  .kpi-row.compact .kpi-card, .kpis-5 .kpi{padding:12px 14px; border-radius:12px;}
+  .kpi-row.compact .head{margin-bottom:6px;}
+  .kpi-row.compact .label, .kpi .lab{font-size:12.5px; color:var(--text-2);}
+  .kpi-row.compact .big, .kpi .val{font-size:19px;}
+  .kpi .val{font-size:27px; font-weight:700; letter-spacing:-.02em; margin-top:5px; line-height:1.15; font-variant-numeric:tabular-nums;}
+  .kpi .val small{font-size:13px; font-weight:500; color:var(--muted); margin-left:3px;}
+  .kpi-row.compact .sub, .kpi .sub{font-size:11.5px; color:var(--muted); margin-top:5px; line-height:1.4; display:flex; align-items:center; gap:7px; flex-wrap:wrap;}
+
+  .ov-chart-sub{font-size:11.5px; color:var(--muted);}
+  .unit-badge{flex:none; font-size:10.5px; font-weight:700; color:var(--muted); background:var(--surface-2); border-radius:999px; padding:3px 11px; margin-top:2px;}
+  .chart-wrap{position:relative; margin-top:10px;}
+  #ovTooltip{position:absolute; display:none; background:var(--text); color:#fff; font-size:11px; padding:5px 8px; border-radius:6px; pointer-events:none; white-space:nowrap; transform:translate(-50%,-115%); z-index:5;}
+  .ov-hit{cursor:pointer;}
+  .ov-pt-group .ovpt{transition:r .15s ease;}
+  .ov-pt-group:hover .ovpt{r:6.5;}
+  .ov-val-text{transition:transform .15s ease; transform-box:fill-box; transform-origin:50% 100%;}
+  .ov-pt-group:hover .ov-val-text{transform:scale(1.5); font-weight:800;}
+  .kpi-card.alert{border-color:var(--crit);}
+  .kpi-card .head{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;}
+  .kpi-card .label{font-size:12.5px; font-weight:700; color:var(--text-2); display:flex; align-items:center; gap:6px;}
+  .kpi-card .label .dot{width:8px; height:8px; border-radius:50%; background:var(--crit); display:inline-block;}
+  .kpi-card .big{font-size:25px; font-weight:800; font-variant-numeric:tabular-nums;}
+  .kpi-card .sub{font-size:11px; color:var(--muted); margin-top:5px; line-height:1.6;}
+  .pill, .badge{display:inline-flex; align-items:center; gap:5px; padding:2.5px 9px; border-radius:999px; font-size:11.5px; font-weight:600; white-space:nowrap; background:var(--line-2); color:var(--text-2);}
+  .pill .dot{width:5px; height:5px; border-radius:50%; background:currentColor; display:inline-block; margin-right:0;}
+  .pill.good, .badge.good{background:var(--good-bg); color:var(--good);}
+  .pill.warn, .badge.warn{background:var(--warn-bg); color:var(--warn);}
+  .badge.info{background:#e8f0fb; color:#1F5C99;}
+  .status-pill{background:var(--line-2); color:var(--text-2); display:inline-flex; align-items:center; padding:2.5px 9px; border-radius:999px; font-size:11.5px; font-weight:600;}
+  .status-pill.done{background:var(--good-bg); color:var(--good);}
+  .status-pill.progress{background:var(--warn-bg); color:var(--warn);}
+  .status-pill.overdue{background:var(--crit-bg); color:var(--crit);}
+  .overdue-flag{display:inline-block; font-size:9px; font-weight:700; color:var(--crit); background:var(--crit-bg); border-radius:5px; padding:1px 6px; margin-left:6px;}
+  .tag{display:inline-block; font-size:9px; font-weight:700; padding:1px 6px; border-radius:5px; margin-right:5px; vertical-align:1px; white-space:nowrap; background:var(--brand-100); color:var(--brand-700);}
+  .tag.neutral{background:var(--line-2); color:var(--text-2);}
+
+  /* ---------- 탭 ---------- */
+  .tabbar, .tabs{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px;}
+  .tabbar button, .tab{padding:6px 13px; border-radius:999px; font-size:12.5px; color:var(--text-2); background:var(--line-2); font-weight:500; display:inline-flex; align-items:center; gap:6px; border:none; cursor:pointer;}
+  .tabbar button:hover:not(.active), .tab:hover{background:#e9ecee;}
+  .tabbar button.active, .tab.on{background:var(--brand); color:#fff; font-weight:600;}
+  .equip-tabbar{margin-bottom:14px; flex-wrap:wrap;}
+  .equip-tabbar button{background:var(--panel); border:1px solid var(--line); color:var(--text-2); padding:4px 13px; font-size:11px; border-radius:999px; cursor:pointer;}
+  .equip-tabbar button.active{background:var(--text); color:#fff;}
+  .equip-tabbar button:hover:not(.active){background:var(--surface-2);}
+  .row-between{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;}
+  .row-between h2{margin-bottom:0;}
+
+  table{width:100%; border-collapse:collapse; font-size:12px;}
+  table.grid th, thead th{text-align:left; padding:8px 10px; font-size:11px; font-weight:600; color:var(--muted); border-bottom:1px solid var(--line); white-space:nowrap; background:var(--surface-2); text-align:center;}
+  table.grid td, tbody td{padding:8px 10px; border-bottom:1px solid var(--line-2); vertical-align:middle; letter-spacing:-.13px; text-align:center; color:var(--text);}
+  table.grid tbody tr:hover, tbody tr:hover{background:var(--gray-50);}
+  tbody td.left, table.grid td.left{text-align:left;}
+  .table-wrap{overflow-x:auto;}
+  table.vac-table{table-layout:fixed; min-width:680px;}
+  table.vac-table td, table.vac-table th{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  table.vac-table td{height:38px; padding-top:0; padding-bottom:0;}
+  table.vac-table td.note-cell{padding-left:14px;}
+  .scrollbox{max-height:172px; overflow-y:auto; border-radius:10px;}
+  .scrollbox table thead{position:sticky; top:0;}
+  .table-scroll{overflow-y:auto;}
+
+  /* ---------- 실적: 상단 라벨 + 헤드라인 KPI + 공정별 미니차트 그리드 ---------- */
+  .perf-toplabel{font-size:12px; font-weight:700; color:var(--ink-muted); text-transform:uppercase; letter-spacing:.03em; margin-bottom:12px;}
+
+  .proc-grid{display:grid; grid-template-columns:repeat(6,1fr); gap:14px; margin-top:4px;}
+  .proc-card{grid-column:span 2; border:1px solid var(--border); border-radius:14px; padding:14px 16px; background:#fbfdfd; transition:transform .15s ease, box-shadow .15s ease;}
+  .proc-card.wide{grid-column:span 3;}
+  .proc-card:hover{transform:translateY(-3px); box-shadow:0 6px 16px rgba(15,27,27,0.10);}
+  .proc-card.flash{animation:procFlash 1s ease;}
+  @keyframes procFlash{0%{box-shadow:0 0 0 3px var(--teal);} 100%{box-shadow:0 0 0 0 transparent;}}
+  .proc-head{display:flex; justify-content:space-between; align-items:flex-start; gap:8px; margin-bottom:8px;}
+  .proc-head h4{margin:0; font-size:13.5px; font-weight:800;}
+  .proc-stat{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px; gap:8px;}
+  .proc-stat .label{font-size:11px; color:var(--ink-muted);}
+  .proc-stat .val{font-size:15px; font-weight:800; font-variant-numeric:tabular-nums;}
+  .mini-bar-row{display:flex; align-items:flex-end; gap:3px; height:96px; padding-top:16px; border-top:1px solid var(--grid);}
+  .mini-bar-col{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; gap:2px; min-width:0; cursor:default;}
+  .mini-bar-val{font-size:9px; font-weight:700; color:var(--ink-1); white-space:nowrap; display:inline-block; transition:transform .15s ease, font-size .15s ease; transform-origin:center bottom;}
+  .mini-bar{width:70%; border-radius:2px 2px 0 0; min-height:2px; transition:filter .15s ease, transform .15s ease; transform-origin:center bottom;}
+  .mini-bar.pending{background:var(--grid) !important;}
+  .mini-bar-col:hover .mini-bar-val{transform:scale(1.45); font-size:11px;}
+  .mini-bar-col:hover .mini-bar:not(.pending){filter:brightness(1.12); transform:scaleY(1.02);}
+  .mini-bar-month{font-size:8.5px; color:var(--ink-muted); margin-top:2px;}
+  .mini-bar-dual{display:flex; align-items:flex-end; gap:1.5px; width:100%; justify-content:center; height:100%;}
+  .mini-bar-dual .mini-bar{width:44%;}
+  .mini-bar-multi{display:flex; align-items:flex-end; gap:2px; width:100%; justify-content:center; height:100%;}
+  .mini-bar-multi-item{display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; width:19%; min-width:0;}
+  .mini-bar-multi-item .mini-bar{width:100%;}
+  .mini-bar-val-sm{font-size:7.6px;}
+  .mini-bar-row.tall{height:150px;}
+  .mini-bar-legend{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:10px;}
+  .mini-bar-legend .lg-item{display:flex; align-items:center; gap:5px; font-size:10.5px; color:var(--ink-2); font-weight:700;}
+  .mini-bar-legend .lg-dot{width:8px; height:8px; border-radius:2px; display:inline-block;}
+  .quality-chart-grid{display:grid; grid-template-columns:4fr 6fr; gap:14px; margin-bottom:6px;}
+  .quality-chart-card{border:1px solid var(--border); border-radius:14px; padding:14px 16px; background:#fbfdfd;}
+  .qc-head{display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:4px;}
+  .quality-chart-card h4{margin:0; font-size:13px; font-weight:800;}
+  .qc-total-pill{font-size:10.5px; font-weight:700; color:#fff; background:var(--teal); padding:3px 10px; border-radius:999px; white-space:nowrap;}
+  @media (max-width:900px){ .quality-chart-grid{grid-template-columns:1fr;} }
+  .proc-empty{color:var(--ink-muted); font-size:12px; text-align:center; padding:30px 0;}
+  .unit-tag{font-size:11px; color:var(--ink-muted); font-weight:700; white-space:nowrap;}
+  .pill .dot{display:inline-block; width:6px; height:6px; border-radius:50%; background:currentColor; margin-right:5px; vertical-align:middle;}
+  .proc-stat.with-pill{align-items:center;}
+  .proc-stat .stat-right{display:flex; align-items:baseline; gap:8px; margin-left:auto;}
+  .proc-stat .period{font-size:11px; color:var(--ink-muted); white-space:nowrap;}
+  .proc-quality-list{margin-top:8px; padding-top:8px; border-top:1px dashed var(--grid); display:flex; flex-direction:column; gap:4px;}
+  .proc-quality-item{font-size:11px; color:var(--ink-1); line-height:1.4;}
+  .proc-quality-item .qm{font-weight:700; color:var(--ink-muted); margin-right:4px;}
+  .proc-quality-more{font-size:10.5px; color:var(--ink-muted);}
+  .proc-quality-section{margin-top:14px; border:1px solid var(--border); border-radius:14px; padding:14px 16px; background:#fbfdfd;}
+  .proc-quality-section h4{margin:0 0 8px; font-size:13.5px; font-weight:800;}
+  .proc-quality-table-wrap{max-height:280px; overflow-y:auto;}
+  .proc-quality-table{width:100%; border-collapse:collapse; font-size:11px;}
+  .proc-quality-table th{position:sticky; top:0; background:#fbfdfd; text-align:center; color:var(--ink-muted); font-weight:700; padding:4px 6px; border-bottom:1px solid var(--grid);}
+  .proc-quality-table td{padding:4px 6px; border-bottom:1px solid var(--grid); text-align:center; color:var(--ink-1); white-space:nowrap;}
+  .proc-quality-table td.left{text-align:left; white-space:normal;}
+
+  .placeholder-box{border:1.5px dashed #cfd8d8; border-radius:12px; padding:22px; text-align:center; color:var(--ink-muted); font-size:12.5px;}
+  .todo{display:flex; align-items:center; gap:10px; padding:9px 4px; border-bottom:1px solid #eef2f2; font-size:12.8px;}
+  .todo:last-child{border-bottom:none;}
+  .todo input{width:14px; height:14px;}
+  .todo.done label{text-decoration:line-through; color:var(--ink-muted);}
+  .count-chip{background:var(--teal); color:#fff; font-size:10.5px; font-weight:700; padding:1px 9px; border-radius:999px; margin-left:6px;}
+
+  .mini-stat-row{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:16px;}
+  .mini-stat{background:#fbfdfd; border:1px solid var(--border); border-radius:13px; padding:12px 16px;}
+  .mini-stat.warn{background:var(--warning-bg); border-color:transparent;}
+  .mini-stat .ms-label{font-size:11.5px; color:var(--ink-muted); font-weight:700; margin-bottom:4px;}
+  .mini-stat .ms-val{font-size:22px; font-weight:800; font-variant-numeric:tabular-nums;}
+  .tag-pill{display:inline-block; padding:2px 9px; border-radius:999px; font-size:10.5px; font-weight:700; background:var(--info-bg); color:var(--info); white-space:nowrap;}
+  .sub-section{margin-top:16px;}
+  .sub-section:first-child{margin-top:0;}
+  .sub-section-head{display:flex; align-items:center; gap:8px; margin-bottom:8px; font-size:13px; font-weight:800;}
+  @media (max-width:640px){ .mini-stat-row{grid-template-columns:repeat(3,1fr); gap:8px;} .mini-stat{padding:10px 10px;} .mini-stat .ms-val{font-size:18px;} }
+
+  .disclaimer{text-align:center; color:var(--ink-muted); font-size:10.8px; margin-top:6px;}
+
+  @media (max-width:1100px){
+    .stat-row{grid-template-columns:repeat(3,1fr);}
+    .kpi-row{grid-template-columns:repeat(2,1fr);}
+    .proc-grid{grid-template-columns:repeat(2,1fr);}
+    .proc-card, .proc-card.wide{grid-column:span 1;}
+  }
+  @media (max-width:900px){
+    .sidebar{position:fixed; inset:0 auto 0 0; z-index:30; transform:translateX(-100%); transition:transform .18s; box-shadow:0 0 40px rgba(0,0,0,.12); display:flex;}
+    .shell.mobile-open .sidebar, .layout.mobile-open .sidebar{transform:none;}
+    .notice-grid{grid-template-columns:1fr;}
+    .stat-row{grid-template-columns:repeat(2,1fr);}
+    .kpi-row{grid-template-columns:1fr;}
+    .proc-grid{grid-template-columns:1fr;}
+    .proc-card, .proc-card.wide{grid-column:span 1;}
+    .menu-btn{display:grid !important;}
+    .tb-search{display:none;}
+  }
+  .menu-btn{display:none;}
+  .icon-btn{width:30px; height:30px; border-radius:10px; border:1px solid transparent; background:none; cursor:pointer; display:grid; place-items:center; font-size:14px; color:var(--text-2);}
+  .icon-btn:hover{background:var(--line-2); border-color:var(--line);}
+  i.ti{display:inline-flex; align-items:center; justify-content:center; line-height:0;}
+  i.ti svg{width:1em; height:1em; display:block;}
+
+  /* ---------- QMS 정합 오버라이드 — 생산운영팀 대시보드(tara-portal.css 949~1039행)와 동일 (2026-10-14 동기화) ---------- */
+  :root{ --r-sm:6px; --r-md:10px; --r-lg:14px; --shadow-1:0 1px 2px rgba(16,24,40,.04), 0 1px 3px rgba(16,24,40,.06);
+         --border-strong:rgba(16,24,40,.14); --ink:var(--gray-900); --ink-3:var(--gray-500); --ls-snug:-0.01em; --ls-tight:-0.02em; }
+  .nav-section{color:var(--ink-3); letter-spacing:.04em;}
+  .nav-item, .side-nav button{border-radius:var(--r-md);}
+  /* 상단바 → QMS 식 탭 스트립 */
+  .topbar{height:40px; padding:0 12px; gap:12px;}
+  .crumbs{height:100%; align-items:stretch; gap:0;}
+  .crumbs strong{display:inline-flex; align-items:center; height:100%; padding:0 14px; font-size:12.5px; font-weight:600; color:var(--ink); border-bottom:2px solid var(--brand); margin-bottom:-1px;}
+  .menu-btn{align-self:center;}
+  .topbar-right{gap:8px; padding-right:4px;}
+  /* 본문 폭·여백 */
+  .page{max-width:none; padding:20px 24px 56px;}
+  .page-head{margin-bottom:16px;}
+  .main .page-title, .page-head h1{font-size:22px; font-weight:700; letter-spacing:var(--ls-tight); gap:10px; margin:0;}
+  .page-head h1 .sub{font-size:13px; font-weight:500; color:var(--ink-3);}
+  .page-head p{font-size:12px; color:var(--ink-3); margin-top:6px;}
+  /* 카드 */
+  .card{border-radius:var(--r-lg); box-shadow:var(--shadow-1); border-color:var(--line); margin-bottom:14px;}
+  .card-head{padding:16px 18px 0; margin-bottom:12px;}
+  .card-head h2, h2.sec-title{font-size:14px; font-weight:700; letter-spacing:var(--ls-snug);}
+  .card-head .desc{font-size:12px; color:var(--ink-3); margin-top:4px;}
+  /* KPI 타일 → QMS metric */
+  .kpi, .kpi-card{border-radius:var(--r-lg); padding:16px 18px 14px; box-shadow:var(--shadow-1);}
+  .kpi::after, .kpi-card::after{content:none;}
+  .kpi:hover, .kpi-card:hover{border-color:var(--border-strong);}
+  .kpi .lab{font-size:12px; font-weight:600; color:var(--text-2); display:flex; align-items:center; gap:7px;}
+  .kpi .lab::before{content:""; width:8px; height:8px; border-radius:3px; background:var(--c, var(--s1)); flex:none;}
+  .kpi .val{font-size:28px; font-weight:700; letter-spacing:var(--ls-tight); margin-top:8px; line-height:1.05; display:flex; align-items:baseline; gap:3px;}
+  .kpi .val small{font-size:13px; font-weight:500; color:var(--ink-3); margin-left:1px;}
+  .kpi .sub{font-size:11.5px; color:var(--ink-3); margin-top:6px;}
+  .kpis-5 .kpi{padding:14px 16px 12px;}
+  /* 표 */
+  table.grid{font-size:12.5px;}
+  table.grid th{background:var(--surface-2); color:var(--ink-3); font-size:11.5px; font-weight:600; padding:9px 10px; border-bottom:1px solid var(--line);}
+  table.grid td{padding:9px 10px; border-bottom:1px solid var(--line); color:var(--ink); font-variant-numeric:tabular-nums;}
+  table.grid tbody tr:hover td{background:var(--surface-2);}
+  table.vac-table td{padding-top:0; padding-bottom:0;}
+  /* 입력 */
+  input[type=text], input[type=search], input[type=date], input[type=number], select, textarea{border-radius:9px; font-size:13px;}
+</style>
+
+
+<div class="shell layout" id="layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo side-logo">
+      <img class="brand-img" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAcAAAAEICAYAAAG/mRQ8AAAWfmNhQlgAABZ+anVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAFlhqdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOjhiN2RkN2E5LTgwYmUtNDM5OS05YWFjLWU4M2FjOTgxZDAyMQAAAAOTanVtYgAAAClqdW1kYzJhcwARABCAAACqADibcQNjMnBhLmFzc2VydGlvbnMAAAAAuGp1bWIAAABEanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5pbmdyZWRpZW50LnYzAAAAABhjMnNo394Ds++VO0sJB17w2cNLSQAAAGxjYm9yo2lkYzpmb3JtYXRpaW1hZ2UvcG5namluc3RhbmNlSUR4LHhtcDppaWQ6ZDJlY2ZlMmEtZmUzMy00NTE0LWIyODgtZjU0YzRhZjEwY2FibHJlbGF0aW9uc2hpcGhwYXJlbnRPZgAAAeJqdW1iAAAAQWp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuYWN0aW9ucy52MgAAAAAYYzJzaHgqmTtO8PNNkslJBDMhdFsAAAGZY2JvcqJnYWN0aW9uc4KiZmFjdGlvbmtjMnBhLm9wZW5lZGpwYXJhbWV0ZXJzoWtpbmdyZWRpZW50c4GiY3VybHgtc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5pbmdyZWRpZW50LnYzZGhhc2hYIEe10yj0RK2+sXlaEJXB88Bdj4ELD8QZF7K9kmpXtDwMpGZhY3Rpb254HWNvbS5hbnRocm9waWMuY2xhdWRlLnByb3ZpZGVkanBhcmFtZXRlcnOheB9jb20uYW50aHJvcGljLm9yaWdpbi1jb25maWRlbmNlZ3Vua25vd25rZGVzY3JpcHRpb254ZkNsYXVkZSBwcm92aWRlZCB0aGlzIGZpbGUgYXQgdGhlIHJlcXVlc3Qgb2YgYSB1c2VyIGFuZCBtYXkgaGF2ZSBjcmVhdGVkIG9yIG1vZGlmaWVkIHRoZSBmaWxlIGNvbnRlbnRzLm1zb2Z0d2FyZUFnZW50oWRuYW1lZkNsYXVkZXJhbGxBY3Rpb25zSW5jbHVkZWT1AAAAyGp1bWIAAABAanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5oYXNoLmRhdGEAAAAAGGMyc2h0H/7dy6dCCcbxHiSZ5AAvAAAAgGNib3KlY2FsZ2ZzaGEyNTZjcGFkTQAAAAAAAAAAAAAAAABkaGFzaFggURyad0E5MRKQbwy2PRtVl0elI/QNd9LAslXUX6YiiABkbmFtZW5qdW1iZiBtYW5pZmVzdGpleGNsdXNpb25zgaJlc3RhcnQYIWZsZW5ndGgZFooAAAI+anVtYgAAACdqdW1kYzJjbAARABCAAACqADibcQNjMnBhLmNsYWltLnYyAAAAAg9jYm9ypWNhbGdmc2hhMjU2aXNpZ25hdHVyZXhNc2VsZiNqdW1iZj0vYzJwYS91cm46YzJwYTo4YjdkZDdhOS04MGJlLTQzOTktOWFhYy1lODNhYzk4MWQwMjEvYzJwYS5zaWduYXR1cmVqaW5zdGFuY2VJRHgseG1wOmlpZDphMTllNTBjMi0wNTg0LTRjNzUtYTBhMS05NmU3NTg3ZmFjNzhyY3JlYXRlZF9hc3NlcnRpb25zg6JjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggR7XTKPRErb6xeVoQlcHzwF2PgQsPxBkXsr2Sale0PAyiY3VybHgqc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5hY3Rpb25zLnYyZGhhc2hYIF8BwK4ZWzOdvKjBhmcKF3gSBq5Zy9ZSuhEbtxC7RR4momN1cmx4KXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaGFzaC5kYXRhZGhhc2hYIKM8LU7F0WPUCzSHwmei8GiHAz3gvUkJIAibz6iHMp+8dGNsYWltX2dlbmVyYXRvcl9pbmZvo2RuYW1lb0FudGhyb3BpYyBGaWxlc2d2ZXJzaW9uZTEuMC4wa3NwZWNWZXJzaW9uZTIuNC4wAAAQOGp1bWIAAAAoanVtZGMyY3MAEQAQgAAAqgA4m3EDYzJwYS5zaWduYXR1cmUAAAAQCGNib3LShFkCEqIBJhghWQIKMIICBjCCAY2gAwIBAgIUQOWgCu7COdC+uIP6BkIFPWdVEwAwCgYIKoZIzj0EAwMwSTEXMBUGA1UEChMOQW50aHJvcGljLCBQQkMxLjAsBgNVBAMTJUFudGhyb3BpYyBDb250ZW50IENyZWRlbnRpYWxzIFJvb3QgQ0EwHhcNMjYwODA3MTg0MzU2WhcNMjgwODA2MTk0MzU2WjBEMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEpMCcGA1UEAxMgQW50aHJvcGljIENsYXVkZSBDb250ZW50IFNpZ25pbmcwWTATBgcqhkjOPQIBBggqhkjOPQMBBwNCAASYegpry1AYBRTVNL1CpTlbROnY3dey+UrsF9C3phYrATN3ZHf93Mo8RQN0KOUuOn19P4oWNFWe5n2/She9N7eTo1gwVjAOBgNVHQ8BAf8EBAMCB4AwFQYDVR0lBA4wDAYKKwYBBAGD6F4CATAMBgNVHRMBAf8EAjAAMB8GA1UdIwQYMBaAFM5R4gSBTmRbI/jjxM+aPpzB11zCMAoGCCqGSM49BAMDA2cAMGQCMDFzHRSeAXrSy1WOzkbhPZ6Km2wGTmZ/2gK18k8BQGXyqz88Rdrz6CTX9flAnYNVxgIwcF9c3fVhqmJKpi+UhasNUMko69cyX6STPfta3Q8EjyzDjzoyrol46FP6VFHhvUcJoWNwYWRZDZ4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA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" alt="TARA TPS">
+      <div class="brand-title">인쇄파트 현황판</div>
+      <div class="brand-team">Taratps · 생산본부</div>
+    </div>
+    <nav class="nav side-nav" id="sideNav">
+      <button class="nav-item active" data-tab="overview"><i class="ti" data-i="home"></i>종합대시보드</button>
+      <div class="nav-section">분석</div>
+      <button class="nav-item" data-tab="perf"><i class="ti" data-i="chart"></i>실적</button>
+      <button class="nav-item" data-tab="quality"><i class="ti" data-i="quality"></i>품질</button>
+      <button class="nav-item" data-tab="safety"><i class="ti" data-i="safety"></i>안전</button>
+      <div class="nav-section">관리</div>
+      <button class="nav-item" data-tab="work"><i class="ti" data-i="checklist"></i>업무 · 과제</button>
+      <button class="nav-item" data-tab="people"><i class="ti" data-i="users"></i>인원</button>
+      <button class="nav-item" data-tab="equip"><i class="ti" data-i="tool"></i>설비</button>
+      <div class="nav-section">바로가기</div>
+      <a class="nav-item" href="/dashboards/production-ops" target="_top"><i class="ti" data-i="portal"></i>생산운영팀 대시보드 <span class="ext"><i class="ti" data-i="ext"></i></span></a>
+    </nav>
+    <div class="side-foot build-stamp" style="text-align:left;">
+      데이터 기준 <b id="sideDate"></b><br>
+실적(TPI·품질·생산량·생산매출) 전체 ERP MES 실측치(엑셀 폴백 중단)<br>업무·설비는 일일업무보고(2026-10-19 기준), 인원(휴가)·안전은 생산운영팀 대시보드 2026-10-19 수령분
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="crumbs">
+        <button class="icon-btn menu-btn" id="menuBtn" aria-label="메뉴"><i class="ti" data-i="menu"></i></button>
+        <strong id="crumbTitle">종합대시보드</strong>
+      </div>
+      <div class="topbar-right">
+        <form class="tb-search" role="search" onsubmit="return false"><i class="ti" data-i="search"></i><input type="search" placeholder="검색" aria-label="검색"></form>
+        
+      </div>
+    </header>
+
+    <div class="content">
+
+    <!-- 종합대시보드 -->
+    <div class="tabpanel page" id="panel-overview">
+    <div class="page-title">인쇄파트 현황판</div>
+
+    <!-- 공지사항 -->
+    <div class="card notice-card">
+      <h2 class="notice-heading">공지사항</h2>
+      <div class="notice-grid notice-strip">
+        <div class="notice-item notice"><span class="num n">01</span><div><div class="n1">직원이 다치면서 우선해야 할 급한 일은 단 하나도 없습니다.</div><div class="n2">지게차 사고는 가볍게 — 다시는 사고는 없다</div></div></div>
+        <div class="notice-item notice"><span class="num n">02</span><div><div class="n1">중요 이슈사항은 숨기지 말고 즉시 보고 하십시오.</div><div class="n2">긴급 사항은 선조치 후 보고 : 후 보고시 상황 파악 필수</div></div></div>
+        <div class="notice-item notice"><span class="num n">03</span><div><div class="n1">안전사고 위험 요인 상시 보고 해 주세요.</div><div class="n2">보고된 위험 요인은 즉시 파악 및 개선대책 마련</div></div></div>
+        <div class="notice-item notice"><span class="num n">04</span><div><div class="n1">근태는 기본입니다 : 휴가원 상신은 본인이 직접.</div><div class="n2">ERP10 접속 방법 문서 공유 : 사용자 교육 상시</div></div></div>
+      </div>
+    </div>
+
+    <!-- 핵심 현황 -->
+    <h2 class="sec-title">핵심 현황</h2>
+    <div class="stat-row" id="statRow"></div>
+
+    <!-- 헤드라인 KPI -->
+    <div class="row-between" style="margin-bottom:10px;">
+      <h2 class="sec-title" style="margin-bottom:0;">핵심 실적</h2>
+      <div class="tabbar" data-group="ovperf">
+        <button data-tab="전체">전체</button>
+        <button data-tab="파트" class="active">파트</button>
+        <button data-tab="매엽">매엽</button>
+        <button data-tab="윤전">윤전</button>
+      </div>
+    </div>
+    <div class="tabbar equip-tabbar" data-group="ovequip" id="ovEquipRow" hidden></div>
+    <div class="kpi-row compact" id="headlineRow"></div>
+
+    <!-- 헤드라인 KPI 클릭 시 월별 추이 그래프 -->
+    <div class="card">
+      <div class="card-head">
+        <div><h2 id="ovChartTitle"></h2><p class="desc ov-chart-sub" id="ovChartSub"></p></div>
+        <span class="unit-badge" id="ovChartUnit"></span>
+      </div>
+      <div class="card-body">
+        <div class="chart-wrap">
+          <svg id="ovChartSvg" viewBox="0 0 1180 280" style="width:100%; height:auto; display:block;"></svg>
+          <div id="ovTooltip"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="disclaimer">※ TPI는 ERP MES 생산지수보드(타라TPS), 품질건수·품질비용은 ERP MES 부적합내역(거래처·책임부서·사내외주구분 필터 적용), 생산량(정미수량)·생산매출(사내금액)은 ERP 생산실적현황(타라) — 전부 ERP 실측치이며 엑셀 파일 폴백은 중단했습니다(자사 설비만 집계, 외주업체 "제이드(매엽)" 등은 제외)</div>
+    </div>
+
+    <!-- 업무 -->
+    <div class="tabpanel page" id="panel-work" hidden>
+    <div class="card">
+      <div class="card-body" style="padding-top:16px;">
+      <div class="mini-stat-row" id="workStatRow"></div>
+      <div class="row-between">
+        <h2 style="margin-bottom:0;">파트 업무<span class="count-chip" id="todoCount"></span></h2>
+        <div class="tabbar" data-group="work">
+          <button data-tab="전체">전체</button>
+          <button data-tab="파트" class="active">파트</button>
+          <button data-tab="매엽">매엽</button>
+          <button data-tab="윤전">윤전</button>
+        </div>
+      </div>
+      <div id="todoList"></div>
+      </div>
+      <div class="note">파트 업무는 생산운영팀 파트별 할일의 현재 구축된 대시보드 그대로 사용 : 탭(전체/파트/매엽/윤전) 이동시 상단 건수도 자동으로 해당 범위에 맞게 숫자 변동 처리<br>출처 : "생산운영팀 대시보드"(peer 세션) 업무·과제 — 2026-09-28 기준 수동 입력 스냅샷(2026-10-06 수령, 이후 변경분 미확인)</div>
+    </div>
+    </div>
+
+    <!-- 실적 -->
+    <div class="tabpanel page" id="panel-perf" hidden>
+    <div class="card">
+      <div class="card-body" style="padding-top:16px;">
+      <div class="perf-toplabel">TPI · 품질건수 · 품질비용 · 생산량 · 생산매출 — 1월~12월 실적</div>
+      <div class="kpi-row compact" id="perfHeadlineRow"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body" style="padding-top:16px;">
+      <div class="row-between">
+        <h2 id="procDetailTitle">공정별 실적 상세 — 전체 (1월~12월)</h2>
+        <div class="tabbar" data-group="perf">
+          <button data-tab="전체">전체</button>
+          <button data-tab="파트" class="active">파트</button>
+          <button data-tab="매엽">매엽</button>
+          <button data-tab="윤전">윤전</button>
+        </div>
+      </div>
+      <div class="tabbar equip-tabbar" data-group="perfequip" id="perfEquipRow" hidden></div>
+      <div class="proc-grid" id="procGrid"></div>
+      <div id="procQualityWrap"></div>
+      </div>
+    </div>
+    </div>
+
+    <!-- 인원 -->
+    <div class="tabpanel page" id="panel-people" hidden>
+    <div class="card">
+      <div class="card-body" style="padding-top:16px;">
+      <div class="mini-stat-row" id="peopleStatRow"></div>
+      <div class="row-between">
+        <h2 style="margin-bottom:0;">휴가 일정</h2>
+        <div class="tabbar" data-group="people">
+          <button data-tab="전체">전체</button>
+          <button data-tab="파트" class="active">파트</button>
+          <button data-tab="매엽">매엽</button>
+          <button data-tab="윤전">윤전</button>
+        </div>
+      </div>
+      <div class="table-wrap scrollbox" style="max-height:380px;"><table class="grid vac-table">
+        <thead><tr><th style="width:104px;">휴가 기간</th><th style="width:84px;">팀원 이름</th><th style="width:84px;">공정</th><th style="width:78px;">휴가구분</th><th>비고</th><th style="width:70px;">상태</th></tr></thead>
+        <tbody id="vacationBody"></tbody>
+      </table></div>
+      </div>
+      <div class="note">표현 방법 : 시작일이 최근인 휴가가 위로 오도록 정렬(예정 건이 최상단) · 탭(전체/파트/매엽/윤전) 변경시 해당 범위만 표시(전체=생산운영팀 전 공정) · 상태는 접속일 기준으로 자동 계산(시작 전=예정, 기간 중=휴가중, 종료 후=복귀)<br>출처 : "생산운영팀 대시보드" 2026-10-06 갱신본(팀장 지정 일일업무보고 엑셀 + 기존 Gitgo 옮겨 적은 값 병합, Gitgo 화면 직접 조회 아님) · 이후 신규 승인분은 수령 시 반영 · 8월 이전 개별 건은 Gitgo 승인문서 기준</div>
+    </div>
+    <div class="card">
+      <div class="card-body" style="padding-top:16px;">
+      <div class="row-between"><h2 style="margin-bottom:0;">인원별 최근 승인 연차 · 잔여 <span class="unit-badge">탭 선택에 따라 표시</span></h2></div>
+      <div class="table-wrap scrollbox" style="max-height:340px;"><table class="grid">
+        <thead><tr><th>이름</th><th>소속</th><th>최근 승인 휴가</th><th>일수</th><th>승인 후 잔여</th><th>문서일</th></tr></thead>
+        <tbody id="leaveBalanceBody"></tbody>
+      </table></div>
+      </div>
+      <div class="note">출처 : Gitgo 승인완료 근태신청(ERP10) 문서 기준(2026-10-06, 생산운영팀 대시보드 수령) · 인원별 최근 문서 1건과 문서 하단 잔여일수 · 팀장 결재선에 있는 문서만 조회되어 목록에 없는 인원·건이 있을 수 있음(예: 9/23 임채갑·주현복) · 일일업무보고 일정과 문서 날짜가 다르면 문서 값 우선 · 잔여가 음수(-6일)면 초과 사용</div>
+    </div>
+    </div>
+
+    <!-- 설비 -->
+    <div class="tabpanel page" id="panel-equip" hidden>
+    <div class="card">
+      <div class="card-body" style="padding-top:16px;">
+      <div class="mini-stat-row" id="equipStatRow"></div>
+      <div class="row-between">
+        <h2 style="margin-bottom:0;">설비,정비</h2>
+        <div class="tabbar" data-group="equip">
+          <button data-tab="전체">전체</button>
+          <button data-tab="파트" class="active">파트</button>
+          <button data-tab="매엽">매엽</button>
+          <button data-tab="윤전">윤전</button>
+        </div>
+      </div>
+      <div id="equipGroups"></div>
+      </div>
+      <div class="note">표현방법 : 생산운영팀 대시보드에서 매엽, 윤전에 해당하는 부분만 구현, 예정/진행중/완료 상태별로 구분 표시 · 탭(전체/파트/매엽/윤전) 변경시 해당 범위만 표시 · 환경관련(폐기물·소음 등)은 현재 구축된 대시보드 항목을 그대로 연동해 이 화면에 함께 표시할 예정<br>출처 : "생산운영팀 대시보드"(peer 세션) 설비 이슈 — 2026-09-22 기준 수동 입력 스냅샷(2026-10-06 수령, 이후 변경분 미확인) · 지연 표시는 기한 경과 건</div>
+    </div>
+    </div>
+
+    <!-- 품질 -->
+    <div class="tabpanel page" id="panel-quality" hidden>
+    <div class="card">
+      <div class="card-body" style="padding-top:16px;">
+      <div class="mini-stat-row" id="qualityStatRow"></div>
+      <div class="quality-chart-grid" id="qualityChartGrid"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body" style="padding-top:16px;">
+      <div class="row-between">
+        <h2>품질 이슈</h2>
+        <div class="tabbar" data-group="quality">
+          <button data-tab="전체">전체</button>
+          <button data-tab="파트" class="active">파트</button>
+          <button data-tab="매엽">매엽</button>
+          <button data-tab="윤전">윤전</button>
+        </div>
+      </div>
+      <div class="scrollbox table-wrap">
+        <table class="grid">
+          <thead><tr><th style="width:9%;">발생월</th><th style="width:7%;">공정</th><th style="width:12%;">발생설비</th><th>품질 내용</th><th style="width:10%;">책임담당자</th><th style="width:9%;">품질비용</th></tr></thead>
+          <tbody id="qualityBody"></tbody>
+        </table>
+      </div>
+      </div>
+      <div class="note">탭(전체/파트/매엽/윤전) 변경시 해당 범위만 표시 · 전체=생산운영팀 전 공정, 파트=인쇄파트(매엽+윤전) · 항목은 실제 발생 건별로 표시(다건 발생월은 각 건 분리 표기)<br>출처 : ERP MES 품질관리-공정검사-부적합내역, 1~10월(10/6 기준) 실적(거래처≠(주)타라티피에스, 책임부서=생산운영팀 또는 하위 파트, 담당자 존재, 사내외주구분=사내)</div>
+    </div>
+    </div>
+
+    <!-- 안전 -->
+    <div class="tabpanel page" id="panel-safety" hidden>
+    <div class="card">
+      <div class="card-body" style="padding-top:16px;">
+      <div class="mini-stat-row" id="safetyStatRow"></div>
+      <div class="row-between">
+        <h2>안전사고 사례</h2>
+        <div class="tabbar" data-group="accident">
+          <button data-tab="전체">전체</button>
+          <button data-tab="파트" class="active">파트</button>
+          <button data-tab="매엽">매엽</button>
+          <button data-tab="윤전">윤전</button>
+        </div>
+      </div>
+      <div class="scrollbox table-wrap">
+        <table class="grid">
+          <thead><tr><th style="width:9%;">발생일</th><th style="width:10%;">팀원 이름</th><th style="width:7%;">소속</th><th>사고요약</th><th>후속 확인사항</th><th style="width:9%;">상태</th></tr></thead>
+          <tbody id="accidentBody"></tbody>
+        </table>
+      </div>
+      </div>
+      <div class="note">표현 방법 : 기본은 파트(인쇄파트) 안전사고 사례를 표현, 3개 항목 표기 후 나머지는 스크롤로 하위 표기(최근 발생일이 상위) · 탭(전체/파트/매엽/윤전) 이동시 해당 범위만 표시 · 전체=생산운영팀 전 공정<br>출처 : "생산운영팀 대시보드" 안전사고 현황, 2026-10-06 기준(인쇄파트 해당 건은 생산운영팀 대시보드 데이터 기준)</div>
+    </div>
+    <div class="card">
+      <div class="card-body" style="padding-top:16px;">
+      <h2>안전 조치사항</h2>
+      <div id="safetyActionGroups"></div>
+      </div>
+      <div class="note">표현 방법 : 예정/완료 조치로 구분 표시 · 탭(전체/파트/매엽/윤전) 이동시 해당 범위만 표시<br>출처 : "TARA 생산운영팀 통합관리" 대시보드(tara-production-operations.jhnamtara.chatgpt.site) 안전 조치사항(생산운영팀 대시보드), 2026-10-06 기준</div>
+    </div>
+    </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+// ---------------- 공통 유틸 ----------------
+function fmtDate(d){ return d.toISOString().slice(0,10); }
+function fmtDateTime(d){ return d.toISOString().slice(0,10) + ' ' + String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'); }
+document.getElementById('sideDate').textContent = fmtDateTime(new Date());
+
+function toast(msg){
+  let t = document.getElementById('toastEl');
+  if(!t){ t=document.createElement('div'); t.id='toastEl';
+    t.style.cssText='position:fixed;left:50%;bottom:26px;transform:translateX(-50%);background:#111;color:#fff;padding:9px 16px;border-radius:10px;font-size:12.5px;z-index:99;opacity:0;transition:opacity .2s;';
+    document.body.appendChild(t);
+  }
+  t.textContent = msg; t.style.opacity='1';
+  clearTimeout(t._h); t._h = setTimeout(()=>t.style.opacity='0', 1800);
+}
+
+// ---------------- 사이드바: 화면(패널) 전환 ----------------
+const sideBtns = document.querySelectorAll('#sideNav button[data-tab]');
+const TAB_TITLES = {overview:'종합대시보드', perf:'실적', work:'업무 · 과제', people:'인원', equip:'설비', quality:'품질', safety:'안전'};
+function switchTab(tab){
+  sideBtns.forEach(b=>b.classList.toggle('active', b.dataset.tab===tab));
+  document.querySelectorAll('.tabpanel').forEach(p=>{ p.hidden = true; });
+  const panel = document.getElementById('panel-'+tab);
+  if(panel) panel.hidden = false;
+  const crumb = document.getElementById('crumbTitle'); if(crumb) crumb.textContent = TAB_TITLES[tab] || tab;
+  const content = document.querySelector('.content'); if(content) content.scrollTo({top:0, behavior:'instant'});
+  document.getElementById('layout').classList.remove('mobile-open');
+}
+sideBtns.forEach(b=>b.addEventListener('click', ()=> switchTab(b.dataset.tab)));
+const menuBtn = document.getElementById('menuBtn');
+if(menuBtn) menuBtn.onclick = ()=> document.getElementById('layout').classList.toggle('mobile-open');
+
+// ---------------- 사이드바/상단바 아이콘 (생산운영팀 대시보드와 동일 세트) ----------------
+const NAV_ICONS = {
+  home: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10l7-6 7 6M5 9v7h10V9"/></svg>',
+  checklist: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 6h9M4 10h12M4 14h7"/><circle cx="16" cy="15" r="2.3"/></svg>',
+  users: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="7.2" cy="6.5" r="2.3"/><path d="M2.7 16c.4-2.8 2.3-4.4 4.5-4.4s4.1 1.6 4.5 4.4"/><circle cx="14" cy="7.2" r="1.8"/><path d="M12.8 11.7c1.7.1 3.1 1.5 3.5 4"/></svg>',
+  tool: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10" cy="10" r="2.6"/><path d="M10 3v2M10 15v2M3 10h2M15 10h2M5.3 5.3l1.4 1.4M13.3 13.3l1.4 1.4M14.7 5.3l-1.4 1.4M6.7 13.3l-1.4 1.4"/></svg>',
+  chart: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M3.5 16.5v-5M9 16.5v-9M14.5 16.5v-3M18 16.5v-11"/></svg>',
+  quality: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M10 2.5l6 6-6 9-6-9z"/></svg>',
+  safety: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M10 2.5l7 3.2v4c0 4.3-3 7.3-7 8.3-4-1-7-4-7-8.3v-4z"/><path d="M7.2 10.2l2 2 3.6-3.8"/></svg>',
+  portal: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="2.5" y="2.5" width="6" height="6" rx="1"/><rect x="11.5" y="2.5" width="6" height="6" rx="1"/><rect x="2.5" y="11.5" width="6" height="6" rx="1"/><rect x="11.5" y="11.5" width="6" height="6" rx="1"/></svg>',
+  ext: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4.5h6v6M14 4.5l-6.5 6.5M5.5 6.5h-1v9h9v-1"/></svg>',
+  chevron: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 8l5 4 5-4"/></svg>',
+  search: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="8.5" cy="8.5" r="5.5"/><path d="M13 13l4 4"/></svg>',
+  key: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="7" cy="13" r="3"/><path d="M9.5 10.5L16 4M13 5l2 2M15.5 2.5l2 2"/></svg>',
+  logout: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3.5H4v13h4M13 6.5l4 3.5-4 3.5M17 10H8"/></svg>',
+  menu: '<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 6h14M3 10h14M3 14h14"/></svg>'
+};
+document.querySelectorAll('[data-i]').forEach(el=>{ el.innerHTML = NAV_ICONS[el.getAttribute('data-i')] || ''; });
+
+// 핵심 현황 카드 → 해당 화면으로 이동
+document.getElementById('statRow').addEventListener('click', (e)=>{
+  const card = e.target.closest('.stat-card'); if(!card) return;
+  switchTab(card.dataset.jump);
+});
+// 헤드라인 KPI 카드 → 같은 화면(종합대시보드) 안에서 해당 지표의 월별 추이 그래프로 전환
+document.getElementById('headlineRow').addEventListener('click', (e)=>{
+  const card = e.target.closest('.kpi-card'); if(!card || card.classList.contains('disabled')) return;
+  if(card.dataset.metric) selectOverviewMetric(card.dataset.metric);
+});
+
+// ---------------- 공통: 전체/파트/매엽/윤전 범위 판정 ----------------
+// 전체 = 생산운영팀 전 공정(매엽·윤전 외 제판·중철·무선·코팅 등 포함) · 파트 = 인쇄파트(매엽+윤전) · 매엽/윤전 = 개별 공정
+function inScope(proc, tab){
+  if(tab==='전체') return true;
+  if(tab==='파트') return proc==='매엽'||proc==='윤전';
+  return proc===tab;
+}
+
+// ---------------- 파트 업무 ----------------
+// 출처: "생산운영팀 대시보드" 업무·과제(2026-09-28 기준 수동 입력 스냅샷, 2026-10-06 수령). tag = 공정(매엽/윤전/제판/운영팀/제본). 인쇄 일반 건은 기존 배정(매엽/윤전) 유지
+const todos = [
+  {t:'정성일 매니저 병가(10/1~10/16) — 10/17 퇴원, 통원치료(주 3회), 병가 휴직 검토 — 신재 요청, 생산본부 입장 정리 필요, 아르바이트 인력 투입 (남정희)', date:'2026-10-01', done:false, tag:'윤전'},
+  {t:'국윤전2호기 칠크린 모터 단종 — 개선품 사양 비교 검토, 지에스테크 대체품 구입(9/9~10/12) (김민규)', date:'2026-10-12', done:true, tag:'윤전'},
+  {t:'국윤전2호기 급지 조작 판넬 수리 중(10/1~, 꿈의컴) — 예비품 활용 예정 (김민규)', date:'2026-10-01', done:false, tag:'윤전'},
+  {t:'국윤전2호기 급지 조작 판넬 셋팅 및 장착(10/16) — 솔라고PMS (김민규)', date:'2026-10-16', done:true, tag:'윤전'},
+  {t:'국윤전 대체 인력 준비 — 정성일 치료 장기화 예상, 인력 섭외 중(10/16~) (남정희)', date:'2026-10-16', done:false, tag:'윤전'},
+  {t:'인쇄기 롤러 피복 재생 조사(9/11~) — 광성(독일)·태창인재(일본) 견적·품질 조사, 삼화롤러 사업 종료 대비 (김민규)', date:'2026-09-11', done:false, tag:'매엽'},
+  {t:'설비관리 시스템 운영 — 설비별 점검 QR 메인 설비만 부착 완료, 현장 교육·부품 등록 점검(상시) (김민규)', done:false, tag:'매엽'},
+  {t:'현장 전화기 소리 점검 — 매엽·국윤전, 총무팀에 증폭기 설치 요청(10/12~)', date:'2026-10-12', done:false, tag:'매엽'},
+  {t:'국윤전1호기 급지 페이스터 A측 에어호스 피팅 교환(10/13) — 자체정비 (김민규)', date:'2026-10-13', done:true, tag:'윤전'},
+  {t:'4*6윤전 냉동기 에러코드 관련 업체 방문(10/14) — 설비 가동 중, 센츄리 (김민규)', date:'2026-10-14', done:true, tag:'윤전'},
+  {t:'국윤전2호기 2번 유니트 하부 잉크파운틴 엠프 에러 점검(10/14) — 자체정비 (김민규)', date:'2026-10-14', done:true, tag:'윤전'},
+  {t:'국윤전2호기 자동핀트 A·B면 감도 조정(10/14) — 자체정비 (김민규)', date:'2026-10-14', done:true, tag:'윤전'},
+  {t:'국윤전 냉동1호기 콤프 소음 커짐 — 온도 재셋팅(10/14) — 자체정비 (김민규)', date:'2026-10-14', done:true, tag:'윤전'},
+  {t:'10/17(토) 매엽·국윤전 근무 예정 — 아래나 대응 (남정희)', date:'2026-10-14', due:'2026-10-17', done:false, tag:'매엽'},
+  {t:'생산관리 지원자 면접(총 3명, 10/15~16) — 생산기획팀 동석 (남정희)', date:'2026-10-15', due:'2026-10-16', done:false, tag:'운영팀'},
+  {t:'제판 업무용 PC 및 프로그램 도입 점검(10/13~) — 품의 승인, IT지원팀 일정 점검 (전상현)', date:'2026-10-13', done:false, tag:'제판'},
+  {t:'국윤전2호기 홀더측 벨트롤러 누름 샤프트 베어링 파손 교체(10/12) — 자체정비 (김민규)', date:'2026-10-12', done:true, tag:'윤전'},
+  {t:'국윤전1호기 2번 유니트 상부 V4 유니온 밸브 파손 교체(10/9) — 자체정비 (김민규)', date:'2026-10-09', done:true, tag:'윤전'},
+  {t:'매엽3호기 2번 유니트 포텐쇼메터 교환(10/7) — 솔라고PMS (김민규)', date:'2026-10-07', done:true, tag:'매엽'},
+  {t:'국윤전1호기 3번 유니트 하부 습수 팬롤러 베어링 교체(10/6) — 자체정비 (김민규)', date:'2026-10-06', done:true, tag:'윤전'},
+  {t:'4*6윤전 4번 유니트 클러치 지연 — 센서 교체(9/8~10/6) — 솔라고PMS (김민규)', date:'2026-10-06', done:true, tag:'윤전'},
+  {t:'매엽3호기 2번 유니트 포텐쇼메터 교환·4번 유니트 습수 롤러 교체(10/6) (김민규)', date:'2026-10-06', done:true, tag:'매엽'},
+  {t:'매엽5호기 2번 유니트 롤러 교체(10/6) — 자체정비 (김민규)', date:'2026-10-06', done:true, tag:'매엽'},
+  {t:'국윤전2호기 쵸파 아대 마모 가공 입고(9/18~10/1) — 대형인쇄기계 (김민규)', date:'2026-10-01', done:true, tag:'윤전'},
+  {t:'매엽 가습장치 동작·상태 점검(10/1) — 신안테크 (김민규)', date:'2026-10-01', done:true, tag:'매엽'},
+  {t:'국윤전1호기 소프트닝 G측 컨트롤러 에러 점검(9/30) — 솔라고PM (김민규)', date:'2026-09-30', done:true, tag:'윤전'},
+  {t:'매엽4호기 배지부 사이드 조거 핀 부러짐 정비(9/30) — 솔라고PM (김민규)', date:'2026-09-30', done:true, tag:'매엽'},
+  {t:'국윤전2호기 메인판넬 PLC D/A 컨버터 고장 — 부품 교체 가동(9/29, 긴급정비) (김민규)', date:'2026-09-29', done:true, tag:'윤전'},
+  {t:'4*6윤전 스태커 댐지 콤프 고장 — B측 수리 장착(9/29) — 광성전기 (김민규)', date:'2026-09-29', done:true, tag:'윤전'},
+  {t:'주현복·임채갑 매니저 연차·반차 요청 — 지방 일정 및 국윤전1호기 주간조 근무편성 확인 (남정희)', end:'2026-09-23', date:'2026-09-23', done:false, tag:'윤전'},
+  {t:'임채갑 매니저 10/10 근무 불가(지방 일정) — 근무편성 확인 필요 (남정희)', end:'2026-10-10', date:'2026-10-10', done:false, tag:'윤전'},
+  {t:'우즈벡 표지 인쇄 매엽4호기로 작업 요청 — 매엽5호기 인쇄 문제 지속 발생', date:'2026-10-13', done:false, tag:'매엽'},
+  {t:'인쇄 파트장 결원 대응 및 기장급 인력 확보 — 후보자 확인 및 면담 (남정희)', done:false, tag:'매엽'},
+  {t:'국윤전1·2호기 판걸이 슬라이딩 로드 실린더 제작 — 한신티엔에스 2세트 (김민규)', date:'2026-10-12', done:true, tag:'윤전'},
+  {t:'김동철 매니저 지게차 안전사고 — 출근 가능일 점검(10/19)(7/25~10/17, 금촌 메디인병원 개방성골절 수술·6주 진단, 핀 제거 9/7) (남정희)', date:'2026-10-17', done:true, tag:'윤전'},
+  {t:'인쇄 외부업체 CIP3 데이터 전송 방법 개선 — 웹하드에서 FTP서버로 변경 (김민규)', done:false, tag:'매엽'},
+  {t:'국윤전2호기 드라이어 압력센서 교환 준비 — 솔라고 (김민규)', date:'2026-08-18', done:true, tag:'윤전'},
+  {t:'매엽3호기 2번유니트 판걸이 홀더 오류 — 솔라고PMS 응급조치(정상가동), 브라켓 교체 예정 (김민규)', date:'2026-09-30', done:true, tag:'매엽'},
+  {t:'국윤전 정성일 매니저 연차휴가(9/21) — 오른쪽 무릎 병원진료 (남정희)', date:'2026-09-21', done:true, tag:'윤전'},
+  {t:'강진활·김선찬 매니저 연차휴가(9/18) (남정희)', date:'2026-09-18', done:true, tag:'매엽'},
+  {t:'매엽4호기 자동판걸이 센서·베어러 와이퍼 브라켓 볼트 교환(9/17) — 엠테크 (김민규)', date:'2026-09-17', done:true, tag:'매엽'},
+  {t:'매엽1호기 배지부 체인 외 부품 교환(9/17) — 엠테크 품의 승인 (김민규)', date:'2026-09-17', done:true, tag:'매엽'},
+  {t:'매엽1호기 하부 4번 물롤러 에러 인버터 교환(9/17) — 솔라고 (김민규)', date:'2026-09-17', done:true, tag:'매엽'},
+  {t:'매엽5호기 급지 하리 콤프 L1 교체(9/17) — 광성전기 수리 반출 완료 (김민규)', date:'2026-09-17', done:true, tag:'매엽'},
+  {t:'국윤전2호기 페이스터 A축 브레이크 고장(9/17) — 자체정비 (김민규)', date:'2026-09-17', done:true, tag:'윤전'},
+  {t:'46윤전 A측 스태커 및 코팅 반전기 에어노즐 구동 점검(9/17) — 솔라고 (김민규)', date:'2026-09-17', done:true, tag:'윤전'},
+  {t:'매엽1호기 유니트3번 세척장치 고정핀 제작(9/16) — 부강기계 대체품 제작 의뢰 확인 (김민규)', date:'2026-09-16', done:true, tag:'매엽'},
+  {t:'4·6윤전 검사장치 메인 PC 부팅 불량 수리(9/15) — 꿈의컴 수리 예정 (김민규)', date:'2026-09-15', done:true, tag:'윤전'},
+  {t:'외국인근로자 2명 공정 배치 및 교육(9/21~10/2) — 무선 너빈·매엽 엔선 (한상현)', end:'2026-10-02', date:'2026-10-02', done:false, tag:'운영팀'},
+  {t:'26년 외국인고용 4차 신청(~9/29) — 네팔·몽골 국적 (남정희)', end:'2026-09-29', date:'2026-09-29', done:false, tag:'운영팀'},
+  {t:'무선 외부지원자(이재호) 시용근무(9/28~10/2) — 접지·재단공정 배치 확인 (남정희)', end:'2026-10-02', date:'2026-10-02', done:false, tag:'운영팀'},
+  {t:'무선공정 신입사원 박재훈·김종민 온보딩(9/28) (남정희·김명훈)', end:'2026-09-28', date:'2026-09-28', done:false, tag:'운영팀'},
+  {t:'일학습병행제(김선찬M 학습일지·이상일M 교과목개발) 점검', done:false, tag:'운영팀'},
+  {t:'생산공정 위험성평가 외부컨설팅 시행 — 설문지 작성(생산직 전원, 10/14 완료), 총무팀 주관', date:'2026-10-14', done:true, tag:'운영팀'},
+  {t:'품질개선팀 프린트튠(색상관리) 스위치용 서버 3종 설치(9/18~) (전상현)', date:'2026-09-18', done:false, tag:'제판'},
+  {t:'CTP 1호기 현상기 570판 이송 에러 점검(9/17) — 암스키코리아 (전상현)', end:'2026-09-17', date:'2026-09-17', done:false, tag:'제판'},
+  {t:'수정판 재출력 건의 판 폐기 여부 전달 체계 점검', done:false, tag:'제판'},
+  {t:'스위치 시스템 기능 정의·역할·미사용 기능 정리', done:false, tag:'제판'},
+  {t:'우즈벡 교과서 표지 데이터 및 후가공 데이터 점검 (남정희·전상현)', done:false, tag:'제판'},
+  {t:'이명주·황경하 매니저 사고 후속 확인 — 이명주 재활치료 경과, 황경하 10/1 복귀 여부 (남정희)', done:false, tag:'제본'},
+  {t:'국윤전2호기 2번 유니트 하부 잉크파운틴 엠프 에러(역회전) — 솔라고PMS 셋팅 값 재점검(10/16) (김민규)', date:'2026-10-16', done:true, tag:'윤전'},
+  {t:'매엽3호기 2번 유니트 판홀더 오류 — 실린더 센서 조정(10/15) 자체정비 (김민규)', date:'2026-10-15', done:true, tag:'매엽'},
+  {t:'매엽3호기 습수냉각기 알코올 공급장치 공급 불량 점검(10/16) — 솔라고PMS (김민규)', date:'2026-10-16', done:true, tag:'매엽'},
+  {t:'안전현수막(보행 중 휴대폰 사용 제한) 제작 의뢰 — B동 팬스 부착, 주차장~A동 보행구역(10/15~) (남정희)', date:'2026-10-15', done:false, tag:'운영팀'},
+  {t:'26년 외국인고용 4차 신청 — 10/21 지원자 선정 예정(네팔·몽골 국적), P&C팀 요청 (남정희)', date:'2026-10-19', due:'2026-10-21', done:false, tag:'운영팀'},
+  {t:'중철 이치훈 매니저 입원(편도 농양) — 10/20 수술 여부 점검, 출근 가능일 점검(10/19~) (김명훈)', date:'2026-10-19', done:false, tag:'제본'},
+  {t:'신입 이재호 매니저 온보딩 예정(10/26) — 합정 본사 (김명훈)', date:'2026-10-16', due:'2026-10-26', done:false, tag:'제본'},
+  {t:'교정 출력기 2호기(엡손 프린터) 헤드 고장 — 교체 예정(10/15~16), 삼보컴퓨터 견적 226만원 (전상현)', date:'2026-10-15', done:false, tag:'제판'},
+  {t:'10/24(토) 매엽 정상 2부제·코팅 근무 — 우즈벡 145번 작업 (남정희)', date:'2026-10-15', due:'2026-10-24', done:false, tag:'운영팀'},
+  {t:'무선·중철 재단 기장급 인력 확보 — 아르바이트 투입 병행 (김명훈)', done:false, tag:'제본'},
+  {t:'무선 제함기 도입 검토 / 무선 재단기·바인더·정합기 수리 견적 및 일정 점검 (김명훈·김민규)', done:false, tag:'제본'},
+  {t:'마크제이 공정이동 및 네팔 인력 배치 / 호침 불량 개선 및 생산속도 향상 방안 논의 (김명훈)', done:false, tag:'제본'},
+];
+// 표기 규칙(팀장 지시 2026-10-08): '날짜~'는 진행 중, '날짜~날짜'는 뒤쪽 날짜(end) 기준으로 완료. end가 오늘보다 이전이면 자동 완료 처리
+todos.forEach(x=>{ if(!x.done && x.end && x.end < localDateStr(new Date())) x.done = true; });
+function renderTodos(tab){
+  const rows = todos.filter(x=>inScope(x.tag, tab));
+  const pending = rows.filter(x=>!x.done).length;
+  const done = rows.filter(x=>x.done).length;
+  document.getElementById('workStatRow').innerHTML = `
+    <div class="mini-stat"><div class="ms-label">전체</div><div class="ms-val">${rows.length}건</div></div>
+    <div class="mini-stat"><div class="ms-label">예정</div><div class="ms-val">${pending}건</div></div>
+    <div class="mini-stat"><div class="ms-label">완료</div><div class="ms-val">${done}건</div></div>`;
+  // 정렬(팀장 지시 2026-10-12): 미완료(예정·진행) 상위 → 완료 하위.
+  // 예정·진행 = 마감일(due/end) 임박순(빠른 마감 먼저) → 마감 없는 건은 시작일이 오래된 순 → 일자 없는 건 맨 뒤. 완료 = 완료일 최근순
+  const dueOf = x => x.due || x.end || '';
+  const doneKey = x => x.end || x.date || '';
+  const sorted = rows.slice().sort((a,b)=>{
+    if(a.done !== b.done) return a.done ? 1 : -1;
+    if(a.done){
+      const ka = doneKey(a), kb = doneKey(b);
+      if(!ka && !kb) return 0; if(!ka) return 1; if(!kb) return -1;
+      return ka < kb ? 1 : ka > kb ? -1 : 0;
+    }
+    const da = dueOf(a), db = dueOf(b);
+    if(da && db) return da < db ? -1 : da > db ? 1 : 0;
+    if(da) return -1;
+    if(db) return 1;
+    const sa = a.date || '', sb = b.date || '';
+    if(!sa && !sb) return 0; if(!sa) return 1; if(!sb) return -1;
+    return sa < sb ? -1 : sa > sb ? 1 : 0;
+  });
+  const md = k => k.slice(5).replace('-','/');
+  const dateLabel = x => x.done ? (doneKey(x) ? md(doneKey(x)) : '일자 미정')
+    : (dueOf(x) ? '마감 ' + md(dueOf(x)) : (x.date ? md(x.date) + '~' : '일자 미정'));
+  const todoRow = x => `<div class="todo ${x.done?'done':''}"><input type="checkbox" ${x.done?'checked':''} disabled><label><span class="tag-pill">${x.tag}</span> <span style="color:var(--ink-muted); font-size:12px; margin-right:4px;">${dateLabel(x)}</span>${x.t}</label></div>`;
+  const groupHead = (label, n) => `<div style="font-size:12px; font-weight:700; color:var(--ink-muted); padding:10px 0 4px;">${label} <span class="count-chip">${n}건</span></div>`;
+  const pendRows = sorted.filter(x=>!x.done), doneRows = sorted.filter(x=>x.done);
+  document.getElementById('todoList').innerHTML = rows.length
+    ? (pendRows.length ? groupHead('예정·진행', pendRows.length) + pendRows.map(todoRow).join('') : '')
+      + (doneRows.length ? groupHead('완료', doneRows.length) + doneRows.map(todoRow).join('') : '')
+    : `<div class="empty-note" style="color:var(--ink-muted); padding:10px 0;">해당 범위의 업무가 없습니다</div>`;
+  document.getElementById('todoCount').textContent = pending + '건';
+}
+
+// ---------------- 안전사고 사례 ----------------
+// 출처: "생산운영팀 대시보드"(peer 세션) 안전사고 현황 2026-10-06 기준 — 생산운영팀 전 공정(전체 탭) 9건, 인쇄파트(매엽/윤전)는 그중 해당 건
+// proc = 범위 판정용 공정(매엽/윤전/제판/중철/무선/코팅), dept = 화면에 표시하는 세부 소속
+const accidents = [
+  {date:'2026-08-24', name:'황경하 매니저', proc:'무선', dept:'무선접지', summary:'용지 걸림 제거 중 장갑 낀 손이 말려 들어가 왼쪽 손가락 끼임사고', followup:'9/30 치료 종료', status:'치료완료'},
+  {date:'2026-08-12', name:'이명주 매니저', proc:'무선', dept:'무선', summary:'정합기 넘어가다 넘어짐(발등 골절)', followup:'9/27 치료 종료', status:'치료완료'},
+  {date:'2026-07-25', name:'김동철 매니저', proc:'윤전', dept:'국윤전', summary:'국윤전 지게차 사고·개방성 골절 수술·공상처리', followup:'8/11 퇴원 후 통원치료·9/7 핀 제거, 10/16 치료 완료', status:'치료완료'},
+  {date:'2026-06-01', name:'임채갑 매니저', proc:'윤전', dept:'국윤전2호기', summary:'스태커 번들러 용지 제거 중 이상 발생', followup:'외상 치료 및 작업 복귀 확인', status:'치료완료'},
+  {date:'2026-05-15', name:'이재용 매니저', proc:'코팅', dept:'톰슨', summary:'설비 커버에 눌려 왼쪽 두 번째 발가락 골절', followup:'치료 및 작업 복귀 확인', status:'치료완료'},
+  {date:'2026-05-13', name:'김선찬 매니저', proc:'매엽', dept:'매엽', summary:'퇴근 시 넘어져 중수골 폐쇄성 골절', followup:'치료 경과 및 작업 복귀 확인', status:'치료완료'},
+  {date:'2026-05-13', name:'티엔 매니저', proc:'코팅', dept:'코팅2호기', summary:'잔여 코팅 필름을 칼로 제거 중 베임', followup:'치료 및 작업 복귀 확인', status:'치료완료'},
+  {date:'2026-04-09', name:'이상일 매니저', proc:'제판', dept:'제판', summary:'C동 2층 계단에서 미끄러짐', followup:'무릎·팔꿈치 외상 치료 및 복귀 확인', status:'치료완료'},
+  {date:'2026-02-20', name:'이원국 매니저', proc:'매엽', dept:'매엽1호기', summary:'잉크 공급 중 잉크 롤러 말림 사고(왼쪽 검지 끝마디 꺾임)', followup:'8주 치료 및 산재완료 확인', status:'치료완료'},
+];
+
+// ---------------- 안전 조치사항 ----------------
+// 출처: "생산운영팀 대시보드"(peer 세션) 안전 조치사항 26건(예정 6·완료 20) 2026-10-06 기준. proc '공통' = 전공정(전체 탭에만 표시)
+const safetyActions = [
+  {proc:'공통', label:'전공정', item:'생산 중 휴대폰 사용으로 인한 위험', action:'휴대폰 보관함 및 설비별 Teams 설치(남정희/파트장)', date:'-', status:'예정'},
+  {proc:'제본', label:'접지', item:'접지 전설비 센서 커버 상태', action:'점검·교체(김민규/김명훈)', date:'-', status:'예정'},
+  {proc:'중철', label:'중철', item:'중철3호기 삼방 딜리버리 카메라 커버', action:'수정 제작(김명훈)', date:'-', status:'예정'},
+  {proc:'제본', label:'제본', item:'적재리프트 하강 시 발 끼임 위험', action:'2단 스위치·센서·스티커 검토(김민규/김명훈)', date:'-', status:'예정'},
+  {proc:'무선', label:'무선', item:'무선1호기 정합라인 바닥', action:'바닥 보강(김명훈)', date:'-', status:'예정'},
+  {proc:'무선', label:'무선', item:'무선2호기 정합라인 리프트', action:'수리·설치(김민규/김명훈)', date:'-', status:'예정'},
+  {proc:'매엽', item:'매엽1호기 하부 4번 유니트 안전커버', action:'안전커버 부착(김민규)', date:'2026-09-22', status:'완료'},
+  {proc:'윤전', item:'국윤전1호기 3번 유니트 안전스위치', action:'안전스위치 교체(김민규)', date:'2026-09-22', status:'완료'},
+  {proc:'공통', label:'전공정', item:'전공정 위험 위치', action:'안전스티커 부착(접지 우선)', date:'2026-09-16', status:'완료'},
+  {proc:'중철', item:'중철1호기 인칭모드 스피커', action:'볼륨 조정(김명훈)', date:'2026-09-15', status:'완료'},
+  {proc:'무선', item:'무선2호기 바인더 작동 신호', action:'신호음 알림벨 설치(김명훈)', date:'2026-09-15', status:'완료'},
+  {proc:'매엽', item:'화장실 문이 기울어 개폐 안됨(떨어질 위험)', action:'문 해체 및 수리(총무팀 의뢰)', date:'2026-09-12', status:'완료'},
+  {proc:'무선', item:'무선1호기 콘베어 계단', action:'계단 난간 설치(김명훈)', date:'2026-09-12', status:'완료'},
+  {proc:'무선', item:'무선2호기 콘베어 계단', action:'계단 난간 설치(김명훈)', date:'2026-09-12', status:'완료'},
+  {proc:'윤전', item:'국윤전1,2호기 사이 롤용지 준비시 설비 충돌 우려', action:'국윤전1,2호기 사이 안전바 설치(김민규)', date:'2026-09-08', status:'완료'},
+  {proc:'중철', item:'중철1,2호기 딜리버리 커버', action:'커버 수정(김명훈)', date:'2026-09-08', status:'완료'},
+  {proc:'공통', label:'전동지게차', item:'B,C동 전동지게차', action:'후미등·속도 조치(이임재)', date:'2026-09-03', status:'완료'},
+  {proc:'공통', label:'전동지게차', item:'A동 전동지게차', action:'후미등·속도 조치(이임재)', date:'2026-09-01', status:'완료'},
+  {proc:'무선', item:'무선 지게차 운행 구간', action:'지게차 안전라인·보행로 작업(김명훈)', date:'2026-08-30', status:'완료'},
+  {proc:'윤전', item:'현장내 지게차 운행시 추돌 위험(중철/46윤전 구간)', action:'지게차 운행 안전라인 작업(김명훈)', date:'2026-08-30', status:'완료'},
+  {proc:'무선', item:'무선1호기 이명주 사고 위치', action:'이동공간 확보(김명훈)', date:'2026-08-28', status:'완료'},
+  {proc:'매엽', item:'매엽 전설비 안전장치 및 커버 상태 점검', action:'점검 완료(이상 없음)', date:'2026-08-27', status:'완료'},
+  {proc:'윤전', item:'국윤전 전설비 안전장치 및 커버 상태 점검', action:'국윤전2호 2번 유니트 안전스위치 1개 파손 교체 완료', date:'2026-08-27', status:'완료'},
+  {proc:'윤전', item:'46윤전 전설비 안전장치 및 커버 상태 점검', action:'점검 완료(이상 없음)', date:'2026-08-27', status:'완료'},
+  {proc:'중철', item:'중철 전설비 안전장치 및 커버 상태 점검', action:'삼방 안전스위치 2개 교체(김명훈)', date:'2026-08-27', status:'완료'},
+  {proc:'무선', item:'무선 전설비 안전장치 및 커버 상태 점검', action:'점검 완료(이상 없음)(김명훈)', date:'2026-08-27', status:'완료'},
+];function statusBadge(s){
+  if(s==='치료완료'||s==='복귀'||s==='완료') return `<span class="badge good">${s}</span>`;
+  if(s==='치료중'||s==='휴가중'||s==='진행중') return `<span class="badge warn">${s}</span>`;
+  return `<span class="badge info">${s}</span>`;
+}
+function renderAccidents(tab){
+  const rows = accidents.filter(a=>inScope(a.proc, tab));
+  const actionRows = safetyActions.filter(s=>inScope(s.proc, tab));
+  const scheduled = actionRows.filter(s=>s.status==='예정').length;
+  const done = actionRows.filter(s=>s.status==='완료').length;
+  const statRow = document.getElementById('safetyStatRow');
+  if(statRow){
+    statRow.innerHTML = `
+      <div class="mini-stat warn"><div class="ms-label">안전사고 사례</div><div class="ms-val">${rows.length}건</div></div>
+      <div class="mini-stat"><div class="ms-label">예정 조치</div><div class="ms-val">${scheduled}건</div></div>
+      <div class="mini-stat"><div class="ms-label">완료 조치</div><div class="ms-val">${done}건</div></div>`;
+  }
+  document.getElementById('accidentBody').innerHTML = rows.map(a=>`
+    <tr><td>${a.date}</td><td>${a.name}</td><td>${a.dept||a.proc}</td>
+    <td class="left">${a.summary}</td><td class="left">${a.followup}</td><td>${statusBadge(a.status)}</td></tr>`).join('')
+    || `<tr><td colspan="6" style="color:var(--ink-muted);">해당 범위의 안전사고 사례가 없습니다</td></tr>`;
+
+  const actWrap = document.getElementById('safetyActionGroups');
+  if(actWrap){
+    const groups = [
+      {status:'예정', rows:actionRows.filter(s=>s.status==='예정')},
+      {status:'완료', rows:actionRows.filter(s=>s.status==='완료')},
+    ];
+    actWrap.innerHTML = groups.filter(g=>g.rows.length).map(g=>`
+      <div class="sub-section">
+        <div class="sub-section-head">${g.status} 조치<span class="count-chip">${g.rows.length}건</span></div>
+        <table>
+          <thead><tr><th style="width:8%;">공정</th><th>문제점</th><th>조치사항</th><th style="width:12%;">일자</th><th style="width:9%;">상태</th></tr></thead>
+          <tbody>${g.rows.map(s=>`<tr><td>${s.label||s.proc}</td><td class="left">${s.item}</td><td class="left">${s.action}</td><td>${s.date}</td><td>${statusBadge(s.status)}</td></tr>`).join('')}</tbody>
+        </table>
+      </div>`).join('')
+      || `<div style="color:var(--ink-muted); padding:10px 0;">해당 범위의 안전 조치사항이 없습니다</div>`;
+  }
+}
+
+// ---------------- 휴가 일정 ----------------
+// 출처: "생산운영팀 대시보드" 2026-10-06 갱신본 — 팀장 지정 '일일업무보고' 엑셀(10/6 기준) + 기존 Gitgo 옮겨 적은 값 병합(Gitgo 화면 직접 조회 아님).
+// 인쇄파트(매엽·윤전) 건은 갱신본 기준, 타 공정은 갱신본 참고분 + 이전 수령분. open:true = 종료일 미정(진행 중으로 표시)
+// proc = 범위 판정용 공정, dept = 화면 표시용 세부 소속
+const vacations = [
+  {start:'2027-02-06', end:'2027-02-14', name:'빙', proc:'매엽', dept:'매엽', type:'연차', note:'베트남 방문'},
+  {start:'2027-02-04', end:'2027-02-14', name:'타이', proc:'윤전', dept:'국윤전1호기', type:'연차', note:'베트남 방문'},
+  {start:'2026-12-19', end:'2027-01-03', name:'자스리엘', proc:'매엽', dept:'매엽5호기', type:'연차', note:'필리핀 가족모임'},
+  {start:'2026-12-08', end:'2026-12-08', name:'남정희', proc:'운영팀', dept:'생산운영팀', type:'연차', note:'일일업무보고 일정'},
+  {start:'2026-11-05', end:'2026-11-06', name:'남정희', proc:'운영팀', dept:'생산운영팀', type:'연차', note:'일일업무보고 일정'},
+  {start:'2026-10-31', end:'2026-10-31', name:'김영남', proc:'무선', dept:'무선', type:'경조', note:'자녀 결혼(Gitgo 승인 문서)'},
+  {start:'2026-10-12', end:'2026-10-12', name:'전상현 파트장', proc:'제판', dept:'제판파트', type:'연차', note:'Gitgo 승인 문서(승인 후 잔여 10일)'},
+  {start:'2026-10-14', end:'2026-10-14', name:'송희도', proc:'무선', dept:'무선', type:'연차', note:'개인사정'},
+  {start:'2026-10-21', end:'2026-10-21', name:'김민규 파트장', proc:'설비', dept:'설비기술파트', type:'연차', note:''},
+  {start:'2026-10-12', end:'2026-10-14', name:'신재훈', proc:'무선', dept:'무선', type:'경조', note:'조부상(10/12~14, 인천 남동스카이장례식장)'},
+  {start:'2026-10-12', end:'2026-10-12', name:'김정배', proc:'무선', dept:'무선·접지', type:'연차', note:''},
+  {start:'2026-10-10', end:'2026-10-10', name:'임채갑', proc:'윤전', dept:'국윤전', type:'근무불가', note:'지방 일정(매엽·국윤전 9일은 정상근무)'},
+  {start:'2026-10-08', end:'2026-10-19', name:'김동철', proc:'윤전', dept:'국윤전', type:'치료', note:'지게차 사고(개방성골절) — 출근 가능일 점검(10/19)'},
+  {start:'2026-10-07', end:'2026-10-07', name:'노경섭', proc:'중철', dept:'중철', type:'반차(오전)', note:'Gitgo 승인 문서(잔여 -6.5일, 2027 연차 선사용)'},
+  {start:'2026-10-06', end:'2026-10-06', name:'이찬수', proc:'중철', dept:'중철', type:'연차', note:''},
+  {start:'2026-10-06', end:'2026-10-06', name:'신재훈', proc:'무선', dept:'무선', type:'연차', note:''},
+  {start:'2026-10-06', end:'2026-10-06', name:'남정희', proc:'운영팀', dept:'생산운영팀', type:'연차', note:''},
+  {start:'2026-10-02', end:'2026-10-02', name:'조노근', proc:'중철', dept:'중철', type:'연차', note:'개인사정'},
+  {start:'2026-10-01', end:'2026-10-16', name:'정성일', proc:'윤전', dept:'국윤전', type:'병가', note:'10/17 퇴원 후 통원치료(주 3회), 병가 휴직 검토(생산본부 입장 정리 필요), 아르바이트 투입'},
+  {start:'2026-09-30', end:'2026-09-30', name:'정성일', proc:'윤전', dept:'국윤전', type:'연차', note:'개인사정'},
+  {start:'2026-09-30', end:'2026-09-30', name:'전상현 파트장', proc:'제판', dept:'제판', type:'연차', note:'병원진료'},
+  {start:'2026-09-30', end:'2026-09-30', name:'김민규', proc:'설비기술', dept:'설비기술', type:'연차', note:''},
+  {start:'2026-09-29', end:'2026-09-29', name:'황병인', proc:'용지관리', dept:'용지관리', type:'연차', note:'개인사정'},
+  {start:'2026-09-29', end:'2026-09-29', name:'황종하', proc:'제판', dept:'제판', type:'경조', note:'경조휴가'},
+  {start:'2026-09-29', end:'2026-09-29', name:'전상현', proc:'제판', dept:'제판', type:'오후 반차', note:''},
+  {start:'2026-09-28', end:'2026-09-29', name:'너빈', proc:'중철', dept:'중철1호기', type:'연차', note:'부친상'},
+  {start:'2026-09-24', end:'2026-09-24', name:'김정준', proc:'중철', dept:'중철', type:'연차', note:''},
+  {start:'2026-09-23', end:'2026-09-23', name:'양영훈', proc:'중철', dept:'중철', type:'연차', note:'개인사정'},
+  {start:'2026-09-23', end:'2026-09-23', name:'송희도', proc:'무선', dept:'무선', type:'연차', note:''},
+  {start:'2026-09-23', end:'2026-09-23', name:'임채갑', proc:'윤전', dept:'국윤전', type:'연차', note:'지방 일정(국윤전1호기 주간조 가동)'},
+  {start:'2026-09-23', end:'2026-09-23', name:'주현복', proc:'윤전', dept:'국윤전', type:'연차', note:'지방 일정(국윤전1호기 주간조 가동)'},
+  {start:'2026-09-21', end:'2026-09-21', name:'정성일', proc:'윤전', dept:'국윤전', type:'연차', note:'오른쪽 무릎 병원진료'},
+  {start:'2026-09-19', end:'2026-09-19', name:'임채갑', proc:'윤전', dept:'국윤전', type:'연차', note:''},
+  {start:'2026-09-18', end:'2026-09-18', name:'강진활', proc:'매엽', dept:'인쇄파트', type:'연차', note:'개인사정'},
+  {start:'2026-09-18', end:'2026-09-18', name:'김선찬', proc:'매엽', dept:'매엽', type:'연차', note:'개인사정'},
+  {start:'2026-09-16', end:'2026-09-16', name:'황종하', proc:'제판', dept:'제판', type:'오전 반차', note:''},
+  {start:'2026-09-14', end:'2026-09-15', name:'김미선', proc:'무선', dept:'무선', type:'연차', note:''},
+  {start:'2026-09-12', end:'2026-09-12', name:'박호준', proc:'제판', dept:'제판', type:'오후 반차', note:''},
+  {start:'2026-09-11', end:'2026-09-11', name:'정성일', proc:'윤전', dept:'국윤전', type:'연차', note:'개인사정'},
+  {start:'2026-09-11', end:'2026-09-11', name:'구희민', proc:'중철', dept:'중철', type:'연차', note:''},
+  {start:'2026-09-10', end:'2026-09-10', name:'전상현', proc:'제판', dept:'제판', type:'오후 반차', note:'개인사정'},
+  {start:'2026-09-08', end:'2026-09-08', name:'남정희', proc:'운영팀', dept:'생산운영팀', type:'연차', note:'건강검진'},
+  {start:'2026-09-08', end:'2026-09-08', name:'김민규', proc:'설비기술', dept:'설비기술', type:'오후 반차', note:''},
+  {start:'2026-09-07', end:'2026-09-07', name:'전상현', proc:'제판', dept:'제판', type:'오후 반차', note:''},
+  {start:'2026-09-07', end:'2026-09-07', name:'김철환', proc:'윤전', dept:'국윤전', type:'연차', note:''},
+  {start:'2026-09-07', end:'2026-09-11', name:'한상현', proc:'운영팀', dept:'생산운영팀', type:'연차', note:'가족여행'},
+  {start:'2026-09-04', end:'2026-09-04', name:'최상득', proc:'무선', dept:'무선·접지', type:'연차', note:''},
+  {start:'2026-09-02', end:'2026-09-04', name:'김동일', proc:'윤전', dept:'국윤전', type:'연차', note:'개인사정'},
+  {start:'2026-09-02', end:'2026-09-02', name:'조인철', proc:'윤전', dept:'국윤전', type:'연차', note:''},
+  {start:'2026-09-02', end:'2026-09-02', name:'김민규', proc:'설비기술', dept:'설비기술', type:'오후 반차', note:'병원진료'},
+  {start:'2026-08-31', end:'2026-08-31', name:'이용석', proc:'매엽', dept:'매엽', type:'연차', note:'물량 부족(대체 인력 없음)'},
+  {start:'2026-08-31', end:'2026-08-31', name:'이원국', proc:'매엽', dept:'매엽', type:'연차', note:'개인사정'},
+  {start:'2026-08-28', end:'2026-08-28', name:'김선찬', proc:'매엽', dept:'매엽', type:'공가', note:'예비군 훈련'},
+  {start:'2026-08-26', end:'2026-08-28', name:'오선남', proc:'제판', dept:'제판', type:'연차', note:''},
+  {start:'2026-08-18', end:'2026-08-19', name:'김명훈', proc:'제본', dept:'제본파트', type:'출장', note:'일본'},
+  {start:'2026-08-14', end:'2026-08-14', name:'티엔', proc:'코팅', dept:'코팅', type:'연차', note:'운전면허 시험'},
+  {start:'2026-08-13', end:'2026-08-13', name:'티엔', proc:'코팅', dept:'코팅', type:'연차', note:'건강검진'},
+  {start:'2026-08-05', end:'2026-08-09', name:'자스리엘', proc:'매엽', dept:'매엽5호기', type:'하계 휴가', note:'외국인 고향 방문'},
+  {start:'2026-08-01', end:'2026-08-12', name:'국윤전·46윤전 근무조', proc:'윤전', dept:'국윤전·46윤전', type:'하계 휴가', note:'근무조별 하계휴가(국윤전2호기·46윤전 주간조만 가동)'},
+  {start:'2026-08-01', end:'2026-08-09', name:'매엽 근무조', proc:'매엽', dept:'매엽', type:'하계 휴가', note:'설비 2대씩 가동'},
+  {start:'2026-07-25', end:'2026-08-09', name:'빙', proc:'매엽', dept:'매엽', type:'하계 휴가', note:'외국인 고향 방문'},
+  {start:'2026-08-03', end:'2026-08-05', name:'주현복', proc:'윤전', dept:'국윤전', type:'연차', note:'Gitgo 승인문서 3일(문서일 7/28)'},
+  {start:'2026-08-10', end:'2026-08-12', name:'김철환', proc:'윤전', dept:'국윤전', type:'연차', note:'Gitgo 승인문서 3일(문서일 7/23)'},
+  {start:'2026-08-03', end:'2026-08-05', name:'러이', proc:'윤전', dept:'국윤전', type:'연차', note:'Gitgo 승인문서 3일(문서일 7/23)'},
+  {start:'2026-08-03', end:'2026-08-04', name:'타이', proc:'윤전', dept:'국윤전', type:'연차', note:'Gitgo 승인문서 2일(문서일 7/22)'},
+  {start:'2026-08-05', end:'2026-08-07', name:'김형철', proc:'윤전', dept:'국윤전', type:'연차', note:'Gitgo 승인문서 3일(문서일 7/22)'},
+  {start:'2026-08-05', end:'2026-08-07', name:'김영진', proc:'윤전', dept:'국윤전', type:'연차', note:'Gitgo 승인문서 3일(문서일 7/22)'},
+  {start:'2026-08-10', end:'2026-08-12', name:'손현정', proc:'윤전', dept:'국윤전', type:'연차', note:'Gitgo 승인문서 3일(문서일 7/21)'},
+  {start:'2026-07-06', end:'2026-07-13', name:'김동철', proc:'윤전', dept:'국윤전', type:'연차', note:'Gitgo 승인문서 6일(문서일 7/1)'},
+  {start:'2026-06-12', end:'2026-06-12', name:'임채갑', proc:'윤전', dept:'국윤전', type:'연차', note:'Gitgo 승인문서 1일(문서일 6/12)'},
+  {start:'2026-06-12', end:'2026-06-12', name:'조인철', proc:'윤전', dept:'국윤전', type:'연차', note:'Gitgo 승인문서 1일(문서일 6/12)'},
+  {start:'2026-08-03', end:'2026-08-05', name:'칸잉', proc:'매엽', dept:'매엽', type:'연차', note:'Gitgo 승인문서 3일(문서일 7/30)'},
+  {start:'2026-08-05', end:'2026-08-07', name:'이광우', proc:'매엽', dept:'매엽', type:'연차', note:'Gitgo 승인문서 3일(문서일 7/29)'},
+  {start:'2026-08-03', end:'2026-08-07', name:'반원병', proc:'매엽', dept:'매엽', type:'연차', note:'Gitgo 승인문서 5일(문서일 7/28)'},
+  {start:'2026-08-03', end:'2026-08-07', name:'민콴', proc:'매엽', dept:'매엽', type:'연차', note:'Gitgo 승인문서 5일(문서일 7/24)'},
+  {start:'2026-08-03', end:'2026-08-05', name:'이명진', proc:'매엽', dept:'매엽', type:'연차', note:'Gitgo 승인문서 3일(문서일 7/23)'},
+  {start:'2026-08-03', end:'2026-08-05', name:'안', proc:'매엽', dept:'매엽', type:'연차', note:'Gitgo 승인문서 3일(문서일 7/22)'},
+  {start:'2026-07-14', end:'2026-07-14', name:'이용석', proc:'매엽', dept:'매엽', type:'연차', note:'Gitgo 승인문서 1일(문서일 7/15)'},
+  {start:'2026-07-06', end:'2026-07-06', name:'김한성', proc:'매엽', dept:'매엽', type:'연차', note:'Gitgo 승인문서 1일(문서일 7/1)'},
+  {start:'2026-06-19', end:'2026-06-19', name:'마크제이', proc:'매엽', dept:'매엽', type:'연차', note:'Gitgo 승인문서 1일(문서일 6/18)'},
+  {start:'2026-08-03', end:'2026-08-05', name:'송재일', proc:'윤전', dept:'46윤전', type:'연차', note:'Gitgo 승인문서 3일(문서일 7/28)'},
+  {start:'2026-06-19', end:'2026-06-19', name:'김영종', proc:'윤전', dept:'46윤전', type:'연차', note:'Gitgo 승인문서 1일(문서일 6/18)'},
+  {start:'2026-06-19', end:'2026-06-19', name:'김종민', proc:'윤전', dept:'46윤전', type:'연차', note:'Gitgo 승인문서 1일(문서일 6/18)'},
+  {start:'2026-06-12', end:'2026-06-12', name:'성헌경', proc:'윤전', dept:'46윤전', type:'연차', note:'Gitgo 승인문서 1일(문서일 6/11)'},
+  {start:'2026-06-12', end:'2026-06-12', name:'홍삼표', proc:'윤전', dept:'46윤전', type:'연차', note:'Gitgo 승인문서 1일(문서일 6/11)'},
+  {start:'2026-06-12', end:'2026-06-12', name:'문종덕', proc:'윤전', dept:'46윤전', type:'연차', note:'Gitgo 승인문서 1일(문서일 6/11)'},
+];
+function localDateStr(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function vacStatus(v){ const t = localDateStr(new Date()); if(v.open) return t < v.start ? '예정' : '휴가중'; return t < v.start ? '예정' : (t <= v.end ? '휴가중' : '복귀'); }
+function vacPeriod(v){
+  const f = (d, withYear)=> withYear ? d : d.slice(5).replace('-','/');
+  const y = v.start.slice(0,4)!=='2026' || v.end.slice(0,4)!=='2026';
+  if(v.open) return f(v.start,y)+' ~';
+  return v.start===v.end ? f(v.start,y) : f(v.start,y)+' ~ '+f(v.end,y);
+}
+vacations.forEach(v=>{ v.status = vacStatus(v); v.period = vacPeriod(v); });
+vacations.sort((a,b)=> a.start<b.start ? 1 : a.start>b.start ? -1 : (a.name<b.name?-1:1));
+// Gitgo 승인완료 근태신청(ERP10) 문서 기준 인원별 최근 승인 휴가·잔여일수(2026-10-06 확인, 생산운영팀 대시보드 수령). 팀장 결재선 문서만 조회되어 일부 인원 누락 가능. remain=문서 하단 잔여일수
+const leaveBalance = [
+  {name:'정성일', proc:'윤전', dept:'국윤전', start:'2026-09-30', end:'2026-09-30', days:1, remain:-6, doc:'10/1'},
+  {name:'김동일', proc:'윤전', dept:'국윤전', start:'2026-09-02', end:'2026-09-04', days:3, remain:8, doc:'9/2'},
+  {name:'주현복', proc:'윤전', dept:'국윤전', start:'2026-08-03', end:'2026-08-05', days:3, remain:9, doc:'7/28'},
+  {name:'김철환', proc:'윤전', dept:'국윤전', start:'2026-08-10', end:'2026-08-12', days:3, remain:21.5, doc:'7/23'},
+  {name:'러이', proc:'윤전', dept:'국윤전', start:'2026-08-03', end:'2026-08-05', days:3, remain:7, doc:'7/23'},
+  {name:'타이', proc:'윤전', dept:'국윤전', start:'2026-08-03', end:'2026-08-04', days:2, remain:10, doc:'7/22'},
+  {name:'김형철', proc:'윤전', dept:'국윤전', start:'2026-08-05', end:'2026-08-07', days:3, remain:22, doc:'7/22'},
+  {name:'김영진', proc:'윤전', dept:'국윤전', start:'2026-08-05', end:'2026-08-07', days:3, remain:10, doc:'7/22'},
+  {name:'손현정', proc:'윤전', dept:'국윤전', start:'2026-08-10', end:'2026-08-12', days:3, remain:12, doc:'7/21'},
+  {name:'김동철', proc:'윤전', dept:'국윤전', start:'2026-07-06', end:'2026-07-13', days:6, remain:0, doc:'7/1'},
+  {name:'임채갑', proc:'윤전', dept:'국윤전', start:'2026-06-12', end:'2026-06-12', days:1, remain:14, doc:'6/12'},
+  {name:'조인철', proc:'윤전', dept:'국윤전', start:'2026-06-12', end:'2026-06-12', days:1, remain:22, doc:'6/12'},
+  {name:'김선찬', proc:'매엽', dept:'매엽', start:'2026-09-18', end:'2026-09-18', days:1, remain:8.5, doc:'9/15'},
+  {name:'이원국', proc:'매엽', dept:'매엽', start:'2026-08-31', end:'2026-08-31', days:1, remain:12, doc:'8/27'},
+  {name:'칸잉', proc:'매엽', dept:'매엽', start:'2026-08-03', end:'2026-08-05', days:3, remain:8, doc:'7/30'},
+  {name:'이광우', proc:'매엽', dept:'매엽', start:'2026-08-05', end:'2026-08-07', days:3, remain:7, doc:'7/29'},
+  {name:'자스리엘', proc:'매엽', dept:'매엽', start:'2026-08-05', end:'2026-08-09', days:3, remain:10, doc:'7/29'},
+  {name:'반원병', proc:'매엽', dept:'매엽', start:'2026-08-03', end:'2026-08-07', days:5, remain:10, doc:'7/28'},
+  {name:'민콴', proc:'매엽', dept:'매엽', start:'2026-08-03', end:'2026-08-07', days:5, remain:10, doc:'7/24'},
+  {name:'이명진', proc:'매엽', dept:'매엽', start:'2026-08-03', end:'2026-08-05', days:3, remain:11, doc:'7/23'},
+  {name:'빙', proc:'매엽', dept:'매엽', start:'2026-07-25', end:'2026-08-09', days:10, remain:5, doc:'7/23'},
+  {name:'안', proc:'매엽', dept:'매엽', start:'2026-08-03', end:'2026-08-05', days:3, remain:7, doc:'7/22'},
+  {name:'이용석', proc:'매엽', dept:'매엽', start:'2026-07-14', end:'2026-07-14', days:1, remain:22, doc:'7/15'},
+  {name:'김한성', proc:'매엽', dept:'매엽', start:'2026-07-06', end:'2026-07-06', days:1, remain:22, doc:'7/1'},
+  {name:'마크제이', proc:'매엽', dept:'매엽', start:'2026-06-19', end:'2026-06-19', days:1, remain:1, doc:'6/18'},
+  {name:'송재일', proc:'윤전', dept:'46윤전', start:'2026-08-03', end:'2026-08-05', days:3, remain:18, doc:'7/28'},
+  {name:'김영종', proc:'윤전', dept:'46윤전', start:'2026-06-19', end:'2026-06-19', days:1, remain:23, doc:'6/18'},
+  {name:'김종민', proc:'윤전', dept:'46윤전', start:'2026-06-19', end:'2026-06-19', days:1, remain:23, doc:'6/18'},
+  {name:'성헌경', proc:'윤전', dept:'46윤전', start:'2026-06-12', end:'2026-06-12', days:1, remain:15, doc:'6/11'},
+  {name:'홍삼표', proc:'윤전', dept:'46윤전', start:'2026-06-12', end:'2026-06-12', days:1, remain:22, doc:'6/11'},
+  {name:'문종덕', proc:'윤전', dept:'46윤전', start:'2026-06-12', end:'2026-06-12', days:1, remain:22, doc:'6/11'},
+];
+function renderLeaveBalance(tab){
+  const rows = leaveBalance.filter(b=>inScope(b.proc, tab)).sort((a,b)=> a.start<b.start?1:a.start>b.start?-1:0);
+  const wrap = document.getElementById('leaveBalanceBody'); if(!wrap) return;
+  wrap.innerHTML = rows.map(b=>`<tr><td>${b.name}</td><td>${b.dept}</td><td>${b.start===b.end?b.start.slice(5).replace('-','/'):b.start.slice(5).replace('-','/')+' ~ '+b.end.slice(5).replace('-','/')}</td><td>${b.days}일</td><td><b style="${b.remain<0?'color:var(--crit)':''}">${b.remain}일</b>${b.remain<0?' <span class="overdue-flag">초과</span>':''}</td><td>${b.doc}</td></tr>`).join('') || `<tr><td colspan="6" style="color:var(--ink-muted);">해당 범위의 승인 문서가 없습니다</td></tr>`;
+}
+function renderVacations(tab){
+  renderLeaveBalance(tab);
+  const rows = vacations.filter(v=>inScope(v.proc, tab));
+  const scheduled = rows.filter(v=>v.status==='예정').length;
+  const now = rows.filter(v=>v.status==='휴가중').length;
+  const accRows = accidents.filter(a=>inScope(a.proc, tab));
+  document.getElementById('peopleStatRow').innerHTML = `
+    <div class="mini-stat"><div class="ms-label">휴가·공가</div><div class="ms-val">${rows.length}건</div></div>
+    <div class="mini-stat"><div class="ms-label">예정 · 휴가중</div><div class="ms-val">${scheduled}건 · ${now}건</div></div>
+    <div class="mini-stat warn"><div class="ms-label">안전사고 인원</div><div class="ms-val">${accRows.length}명</div></div>`;
+  document.getElementById('vacationBody').innerHTML = rows.map(v=>`
+    <tr><td>${v.period}</td><td>${v.name}</td><td>${v.dept||v.proc}</td><td><span class="tag-pill">${v.type}</span></td><td class="left note-cell" title="${(v.note||'').replace(/"/g,'&quot;')}">${v.note||'-'}</td><td>${statusBadge(v.status)}</td></tr>`).join('')
+    || `<tr><td colspan="6" style="color:var(--ink-muted);">해당 범위의 휴가 일정이 없습니다</td></tr>`;
+}
+// ---------------- 설비 정비 ----------------
+// 출처: "생산운영팀 대시보드" 설비 이슈(수동 입력 스냅샷 2026-09-22 기준, 2026-10-06 수령). late=true → 기한 경과(지연) 표시. 인쇄(매엽·윤전)는 전 건, 타 공정은 주요 건
+const equipment = [
+  {proc:'윤전', task:'국윤전2호기 칠크린 모터 단종 — 개선품 사양 비교 검토(지에스테크 대체품 구입, 9/9~10/12)', date:'2026-09-09', end:'2026-10-12', status:'완료'},
+  {proc:'윤전', task:'4*6윤전 냉동기 에러코드 관련 업체 방문(센츄리, 설비 가동 중 — 10/14 완료)', date:'2026-10-14', end:'2026-10-14', status:'완료'},
+  {proc:'윤전', task:'국윤전2호기 2번 유니트 하부 잉크파운틴 엠프 에러(역회전) — 솔라고PMS 셋팅 값 재점검(10/16 완료)', date:'2026-10-16', end:'2026-10-16', status:'완료'},
+  {proc:'매엽', task:'매엽3호기 2번 유니트 판홀더 오류 — 실린더 센서 조정(자체정비 10/15 완료)', date:'2026-10-15', end:'2026-10-15', status:'완료'},
+  {proc:'매엽', task:'매엽3호기 습수냉각기 알코올 공급장치 공급 불량 점검(솔라고PMS, 10/16 완료)', date:'2026-10-16', end:'2026-10-16', status:'완료'},
+  {proc:'윤전', task:'국윤전2호기 급지 조작 판넬 수리 중(꿈의컴, 예비품 활용 예정) · 판넬 셋팅·장착은 10/16 완료(솔라고PMS)', date:'2026-10-01', status:'진행중'},
+  {proc:'매엽', task:'인쇄기 롤러 피복 재생 조사(광성·태창인재 견적, 삼화롤러 사업 종료 대비)', date:'2026-09-11', status:'진행중'},
+  {proc:'무선', task:'무선 인쇄물 적재 보조 리프트 수리 견적 750만원/3대(명신로보틱스, 증설은 사업장 이전 시 검토)', date:'2026-09-11', status:'진행중'},
+  {proc:'매엽', task:'매엽3호기 2번 유니트 판걸이 홀더 오류(솔라고PMS 응급조치·정상가동 중, 브라켓 교체 예정)', date:'2026-09-21', status:'완료'},
+  {proc:'매엽', task:'매엽3호기 에어케비넷 연결통 호스 파손(자체정비 교환)', date:'2026-09-21', status:'완료'},
+  {proc:'윤전', task:'4*6윤전 급지 A축 브레이크 모터 휀 교환(솔라고PMS)', date:'2026-09-21', status:'완료'},
+  {proc:'윤전', task:'국윤전2호기 쵸파아대 마모 심함(대형인쇄기계 물량 종료 후 가공 예정)', date:'2026-09-18', status:'완료'},
+  {proc:'윤전', task:'국윤전1·2호기 판걸이 슬라이딩 로드 실린더 제작(한신티엔에스 2세트)', date:'2026-08-18', status:'완료'},
+  {proc:'윤전', task:'국윤전2호기 드라이어 탈취 촉매 압력 상승(압력센서 교환 준비)', date:'2026-08-18', status:'완료'},
+  {proc:'윤전', task:'4*6윤전 자동핀트 하부 오류(ISN 방문 점검)', date:'2026-08-14', status:'완료'},
+  {proc:'매엽', task:'매엽4호기 5번 베어러 솜 교환·브라켓 볼트 가공(부강기계 일정 확인)', date:'2026-08-14', status:'완료'},
+  {proc:'매엽', task:'매엽4호기 자동판걸이 센서 점검(엠테크 방문 예정)', date:'2026-08-13', status:'완료'},
+  {proc:'매엽', task:'매엽3호기 1번 덕트롤러 스토퍼 마모(엠테크 부품 교환 예정)', date:'2026-08-12', status:'완료'},
+  {proc:'매엽', task:'매엽3호기 1·2·3번 덕트롤러 스토퍼 마모(엠테크 교환)', date:'2026-08-12', status:'완료'},
+  {proc:'매엽', task:'매엽4호기 5번 베어러 솜 브라켓 볼트 가공(부강기계 휴가 후 확인)', date:'2026-08-03', status:'완료'},
+  {proc:'윤전', task:'국윤전2호기 니핑롤러 140/87파이 가공 반출(엠테크 진행 확인)', date:'2026-07-11', status:'완료'},
+  {proc:'윤전', task:'국윤전2호기 촙퍼아대·상판 수리(참고서 물량 종료 후 대형인쇄기계 작업)', date:'2026-07-06', status:'완료'},
+  {proc:'윤전', task:'국윤전2호기 드라이어 탈취 촉매 압력센서 이상(솔라고 센서 교환·부품 준비)', date:'2026-05-07', status:'완료'},
+  {proc:'무선', task:'무선 재단기 페이퍼조거(덜덜이) 왼쪽 날개 고장(하이델 수리 예정)', date:'2026-09-21', status:'예정'},
+  {proc:'무선', task:'무선2호기 바인더 체인 마모·클램프 처짐(두윈 일정 재점검)', date:'2026-09-18', end:'2026-09-27', status:'예정'},
+  {proc:'코팅', task:'코팅공정 반전기 모터오일 점검 — 유압실린더 누유(독일부품 주문 예정)', date:'2026-09-21', status:'진행중'},
+  {proc:'코팅', task:'코팅1호기 엠보 작업 시 종이 처짐(일진엠앤시 방문 점검 예정)', date:'2026-08-14', status:'예정'},
+  {proc:'무선', task:'무선1호기 삼방 그리퍼 쓰메 실린더 고장(수리 일정·견적 확인)', date:'2026-08-14', status:'예정'},
+  {proc:'제판', task:'제판 교정1호기 급지 플라스틱 기어 노후 파손(엡손 부품 교체)', date:'2026-08-12', status:'진행중'},
+  {proc:'제판', task:'TECs 작동부 배선 커넥터 파손(배선 교체 및 테스트)', date:'2026-08-10', status:'완료'},
+  {proc:'무선', task:'무선1호기 정합기 6·14번 카메라 수리(진일 수리 진행)', date:'2026-08-06', status:'진행중', late:true},
+  {proc:'중철', task:'접지4호기 인버터 고장·예비품 응급조치(하이델 수리 가능 여부 점검)', date:'2026-08-03', status:'진행중', late:true},
+  {proc:'무선', task:'무선 재단기 병풍·나이프 에러 수리(수리 및 이동설비 비용 비교)', date:'2026-07-28', status:'완료'},
+  {proc:'중철', task:'접지2호기 압축기 컨트롤 기판 고장(세운전자 수리 진행)', date:'2026-07-15', status:'진행중', late:true},
+];
+// 종료일(end)이 오늘보다 이전인 정비 건은 자동으로 완료 처리
+equipment.forEach(e=>{ if(e.status!=='완료' && e.end && e.end < localDateStr(new Date())) e.status = '완료'; });
+equipment.sort((a,b)=> a.date<b.date?1:a.date>b.date?-1:0);
+function renderEquip(tab){
+  const rows = equipment.filter(e=>inScope(e.proc, tab));
+  const byStatus = s => rows.filter(e=>e.status===s);
+  const groups = [
+    {status:'예정', rows:byStatus('예정')},
+    {status:'진행중', rows:byStatus('진행중')},
+    {status:'완료', rows:byStatus('완료')},
+  ];
+  document.getElementById('equipStatRow').innerHTML = groups.map(g=>`
+    <div class="mini-stat${g.status==='예정'?' warn':''}"><div class="ms-label">${g.status}</div><div class="ms-val">${g.rows.length}건</div></div>`).join('');
+  document.getElementById('equipGroups').innerHTML = groups.filter(g=>g.rows.length).map(g=>`
+    <div class="sub-section">
+      <div class="sub-section-head">${g.status} 정비<span class="count-chip">${g.rows.length}건</span></div>
+      <table>
+        <thead><tr><th style="width:8%;">공정</th><th>정비 내용</th><th style="width:12%;">일자</th><th style="width:10%;">상태</th></tr></thead>
+        <tbody>${g.rows.map(e=>`<tr><td>${e.proc}</td><td class="left">${e.task}${e.late?`<span class="overdue-flag">지연</span>`:``}</td><td>${e.date}</td><td>${statusBadge(e.status)}</td></tr>`).join('')}</tbody>
+      </table>
+    </div>`).join('')
+    || `<div style="color:var(--ink-muted); padding:10px 0;">해당 범위의 정비 항목이 없습니다</div>`;
+}
+
+// ---------------- 품질 이슈 (월별품질내역 시트 실측치, 1~8월) ----------------
+// person: 책임담당자 - ERP MES 부적합내역 컬럼(Q). 인쇄파트(매엽/윤전) 항목은 "생산운영팀 현황판" 세션에서 팀장님 승인 하에 확인(그 외 공정은 미확인 '-').
+// cost: 품질비용(만원) - 매엽/윤전은 REAL_QCOST 설비×월 실측치를 같은 설비×월 레코드 수로 균등 분배, 그 외 공정은 ERP 부적합내역 공정×월 처리금액(peer 교차확인)을 동일하게 분배.
+const qualities = [
+  {month:'2026-06', proc:'공통', equip:'생산운영팀', content:'BT캘린더 적재 불량(긁힘)', person:'-', cost:34.9629},
+  {month:'2026-02', proc:'제판', equip:'제판(CTP)', content:'DNP 저해상 데이터 문제(사용)', person:'-', cost:0},
+  {month:'2026-07', proc:'제판', equip:'제판(CTP)', content:'눈높이국어 0L과정 12,17세트 _터잡기 불량', person:'-', cost:7.2},
+  {month:'2026-09', proc:'매엽', equip:'매엽1호기', content:'축임물과 잉크의 균형이 깨져 비화선부의 친수성이 약해져 잉크가 묻는 현상', person:'소경석', cost:43.186},
+  {month:'2026-09', proc:'매엽', equip:'매엽4호기', content:'메디움잉크 더블인쇄에 따른 황변 가능성의 사전 검토 미흡', person:'김한성', cost:9.8},
+  {month:'2026-08', proc:'매엽', equip:'매엽1호기', content:'단비교육 한글 K201 윙크일일학습모음집 2단계 1권_색상 부적합', person:'이용석', cost:31.2},
+  {month:'2026-05', proc:'매엽', equip:'매엽3호기', content:'캐로셀2차 여분 부족', person:'반원병', cost:75.3421},
+  {month:'2026-06', proc:'매엽', equip:'매엽3호기', content:'DNP 블랙벨트 농도약함', person:'반원병', cost:23.1063},
+  {month:'2026-07', proc:'매엽', equip:'매엽3호기', content:'(신간) K-POP VOCA IDOL_FAN BOOK 1호_본문1,2대 뒤묻음 불량', person:'이광우', cost:67.7547},
+  {month:'2026-07', proc:'매엽', equip:'매엽3호기', content:'2026년 생존북 _23대,29대 뜯김 불량', person:'반원병', cost:67.7546},
+  {month:'2026-04', proc:'매엽', equip:'매엽4호기', content:'DNP 하울스 필름 코믹 #2 : 잡티', person:'김한성', cost:19.3376},
+  {month:'2026-05', proc:'매엽', equip:'매엽4호기', content:'우즈벡 132번 표지 긁힘', person:'이명진', cost:75.3421},
+  {month:'2026-02', proc:'매엽', equip:'매엽5호기', content:'셕션자국', person:'이화율', cost:55.4203},
+  {month:'2026-02', proc:'매엽', equip:'매엽5호기', content:'샤커자국', person:'이화율', cost:55.4203},
+  {month:'2026-02', proc:'매엽', equip:'매엽5호기', content:'코팅 표기 누락', person:'이화율', cost:55.4204},
+  {month:'2026-03', proc:'매엽', equip:'매엽5호기', content:'DNP 어쎄신 크리드 4권 2대 판기스(재인쇄)', person:'강진활', cost:63.7328},
+  {month:'2026-04', proc:'매엽', equip:'매엽5호기', content:'DNP 그로브 파크 인 : 면지 색상 문제', person:'강진활', cost:19.3376},
+  {month:'2026-06', proc:'매엽', equip:'매엽5호기', content:'코리아 표지 색상불량', person:'강진활', cost:23.1063},
+  {month:'2026-06', proc:'매엽', equip:'매엽5호기', content:'대교영어8A 더러움', person:'강진활', cost:23.1063},
+  {month:'2026-01', proc:'윤전', equip:'46윤전', content:'김유곤 의정보고서 접지 편차(연결면 불량_양출)', person:'문종덕', cost:11.5393},
+  {month:'2026-04', proc:'중철', equip:'중철1호기', content:'놀이똑똑7세트 정합 더러움', person:'-', cost:25},
+  {month:'2026-06', proc:'중철', equip:'중철접지', content:'BT캘린더 플랩형 본문2대 접지 불량', person:'-', cost:29.3038},
+  {month:'2026-07', proc:'무선', equip:'무선1호기', content:'2026년 여성조선 8월호 패밀리_제본 사고 표지만 추가인쇄', person:'-', cost:128.63},
+  {month:'2026-08', proc:'무선', equip:'무선1호기', content:'완벽대비 중2 [영어듣기능력평가]23-25 - 7쇄/ 정합불량 책속의책 표지 부족', person:'-', cost:7.2},
+  {month:'2026-01', proc:'코팅', equip:'코팅1호기', content:'수능특강 세계지리 코팅 주름 원인', person:'-', cost:9.2},
+  {month:'2026-07', proc:'코팅', equip:'코팅1호기', content:'우즈벡-147. 공책 자연과학 3 (카라카이팍어)_표지 라미불량', person:'-', cost:16.055},
+  {month:'2026-02', proc:'코팅', equip:'코팅2호기', content:'코팅불량', person:'-', cost:6.6479},
+  {month:'2026-02', proc:'코팅', equip:'코팅2호기', content:'코팅 부족 : 저평량 제품', person:'-', cost:6.6479},
+];
+qualities.sort((a,b)=> a.month<b.month ? 1 : a.month>b.month ? -1 : 0);
+function renderQuality(tab){
+  const rows = qualities.filter(q=>inScope(q.proc, tab));
+  const pd = PERF[tab];
+  if(pd && pd.품질건수 && pd.품질비용){
+    const cnt = aggSum(pd.품질건수.values.slice(0, ACTUAL_MONTHS));
+    const cost = aggSum(pd.품질비용.values.slice(0, ACTUAL_MONTHS));
+    document.getElementById('qualityStatRow').innerHTML = `
+      <div class="mini-stat"><div class="ms-label">누적 품질건수(1~${ACTUAL_MONTHS}월)</div><div class="ms-val">${fmtMetric('품질건수',cnt)}건</div></div>
+      <div class="mini-stat"><div class="ms-label">누적 품질비용(1~${ACTUAL_MONTHS}월)</div><div class="ms-val">${Math.round(cost).toLocaleString()}만원</div></div>
+      <div class="mini-stat"><div class="ms-label">이슈 상세 건수</div><div class="ms-val">${rows.length}건</div></div>`;
+  }
+  document.getElementById('qualityBody').innerHTML = rows.map(q=>`
+    <tr><td>${q.month}</td><td>${q.proc}</td><td>${q.equip}</td><td class="left">${q.content}</td><td>${q.person}</td><td>${Math.round(q.cost).toLocaleString()}만원</td></tr>`).join('')
+    || `<tr><td colspan="4" style="color:var(--ink-muted);">해당 범위의 품질 이슈가 없습니다</td></tr>`;
+  renderQualityChart(tab);
+}
+const QC_PALETTE = {
+  매엽1호기:'#2a78d6', 매엽3호기:'#1baf7a', 매엽4호기:'#eb6834', 매엽5호기:'#7a5cd6',
+  국윤전1호기:'#2a78d6', 국윤전2호기:'#1baf7a', '46윤전':'#eb6834',
+};
+function renderQualityChart(tab){
+  const grid = document.getElementById('qualityChartGrid');
+  if(!grid) return;
+  let seriesFor;
+  if(tab==='매엽' || tab==='윤전'){
+    seriesFor = (metric) => EQUIPMENT[tab].map(name => ({label:name, color:QC_PALETTE[name], values: PERF[name][metric].values}));
+  } else if(tab==='파트'){
+    seriesFor = (metric) => [
+      {label:'매엽', color:KPI_COLOR.매엽, values: PERF.매엽[metric].values},
+      {label:'윤전', color:KPI_COLOR.윤전, values: PERF.윤전[metric].values},
+    ];
+  } else {
+    seriesFor = (metric) => [{label:'전체', color:METRIC_COLOR[metric], values: PERF.전체[metric].values}];
+  }
+  const cntSeries = seriesFor('품질건수');
+  const costSeries = seriesFor('품질비용');
+  const cntTotal = fmtMetric('품질건수', aggSum(cntSeries.map(s=>s.values.slice(0,ACTUAL_MONTHS)).reduce((a,b)=>a.map((v,i)=>v+b[i]),new Array(ACTUAL_MONTHS).fill(0))));
+  const costTotalRaw = aggSum(costSeries.map(s=>s.values.slice(0,ACTUAL_MONTHS)).reduce((a,b)=>a.map((v,i)=>v+b[i]),new Array(ACTUAL_MONTHS).fill(0)));
+  const costTotal = Math.round(costTotalRaw).toLocaleString();
+  grid.innerHTML = `
+    <div class="quality-chart-card">
+      <div class="qc-head"><h4>품질건수 (${tab})</h4><span class="qc-total-pill">1~${ACTUAL_MONTHS}월 누계 ${cntTotal}건</span></div>
+      ${miniBarsMulti('품질건수', cntSeries)}
+    </div>
+    <div class="quality-chart-card">
+      <div class="qc-head"><h4>품질비용 (${tab})</h4><span class="qc-total-pill">1~${ACTUAL_MONTHS}월 누계 ${costTotal}만원</span></div>
+      ${miniBarsMulti('품질비용', costSeries)}
+    </div>`;
+}
+
+// ---------------- 탭 그룹 공통 처리 ----------------
+document.querySelectorAll('.tabbar').forEach(bar=>{
+  bar.addEventListener('click', (e)=>{
+    const btn = e.target.closest('button'); if(!btn) return;
+    bar.querySelectorAll('button').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const group = bar.dataset.group, tab = btn.dataset.tab;
+    if(group==='work') renderTodos(tab);
+    if(group==='people') renderVacations(tab);
+    if(group==='equip') renderEquip(tab);
+    if(group==='accident') renderAccidents(tab);
+    if(group==='quality') renderQuality(tab);
+    if(group==='perf'){ perfState.tab = tab; perfState.equip = null; renderPerf(); }
+    if(group==='perfequip'){
+      perfState.equip = tab || null;
+      if(perfState.equip){
+        perfState.tab = EQUIP_PARENT[perfState.equip];
+        document.querySelectorAll('.tabbar[data-group="perf"] button').forEach(b=>b.classList.toggle('active', b.dataset.tab===perfState.tab));
+      }
+      renderPerf();
+    }
+    if(group==='ovperf'){
+      ovState.tab = tab; ovState.equip = null;
+      if(!PERF[tab][ovState.metric]) ovState.metric='TPI';
+      renderHeadline(); drawOverviewChart(ovState.metric);
+    }
+    if(group==='ovequip'){
+      ovState.equip = tab || null;
+      if(ovState.equip){
+        ovState.tab = EQUIP_PARENT[ovState.equip];
+        document.querySelectorAll('.tabbar[data-group="ovperf"] button').forEach(b=>b.classList.toggle('active', b.dataset.tab===ovState.tab));
+      }
+      const scope = ovState.equip || ovState.tab;
+      if(!PERF[scope][ovState.metric]) ovState.metric='TPI';
+      renderHeadline(); drawOverviewChart(ovState.metric);
+    }
+  });
+});
+renderTodos('파트');
+renderAccidents('파트');
+renderVacations('파트');
+renderEquip('파트');
+
+// ---------------- 파트 실적 (전체=생산운영팀 전체 · 파트=인쇄파트 전체 · 매엽 · 윤전) ----------------
+// 2026-09-23 기준 전 지표 ERP 실측치로 전환 완료(엑셀 폴백 중단):
+//   TPI = ERP MES 실적관리-작업실적현황-생산지수보드(타라TPS)
+//   품질건수/품질비용 = ERP MES 품질관리-공정검사-부적합내역(거래처≠(주)타라티피에스, 책임부서=생산운영팀 또는 하위 파트,
+//     책임담당자 존재, 사내외주구분=사내 필터 적용) — 처리금액(비용금액) 기준
+//   생산량/생산매출 = ERP 생산관리-생산보고서-생산실적현황(타라)의 "정미수량"/"사내금액", 설비별 취합
+//   ※ 이 세션은 사내 ERP에 직접 로그인할 자격 증명이 없어, 같은 ERP 화면을 실시간 조회한 "생산운영팀 현황판" 세션의
+//     산출값을 교차검증(기존 엑셀 기반 수치와 오차 1% 미만 일치 확인)하여 재사용함 — 직접 실시간 조회는 아님을 밝혀둠
+function pad12(a){ const r=a.slice(); while(r.length<12) r.push(0); return r; }
+function buildScope(table, unit){
+  const out = {};
+  Object.entries(table).forEach(([k,v])=>{ out[k] = {unit, target:v.target, values:pad12(v.m)}; });
+  return out;
+}
+
+// 2026-09-23: ERP MES 실적관리-작업실적현황-생산지수보드(타라TPS)에서 확인된 실측치로 교체(엑셀 폴백 중단).
+// 공정(전체/파트/매엽/윤전) 월별 시계열과 설비별 1~8월 평균은 "생산운영팀 현황판" 세션이 동일 ERP 화면을 실시간 조회해
+// 이미 산출한 값을 교차검증 후 재사용(기존 엑셀 기반 수치와 오차 1% 미만으로 거의 일치 확인됨).
+// 설비별 월간 시계열은 ERP 원본에 보관되어 있지 않아, 기존 엑셀 기반 월별 형태(비중)를 유지한 채 1~8월 평균만
+// ERP 실측 평균에 맞춰 보정(설비별 스케일 계수 0.998~1.008 수준의 미세 조정).
+const REAL_TPI = {
+  전체:      {target:0.83,     m:[0.82,0.83,0.85,0.82,0.88,0.78,0.81,0.77,0.79,0.72]}, // ERP 생산지수보드 "종합 TPI" 차트 값 그대로 사용, 9월 최종·10월(10/1~16 확정분, 10/17~19 TPI 미확정·부분값 제외) ERP 생산지수보드 실측
+  파트:      {target:0.8467,   m:[0.8482,0.8342,0.8652,0.8628,0.8431,0.8334,0.8432,0.799,0.8385,0.8021]}, // 매엽·윤전 ERP 실측 평균의 평균(자체 산출), 9월 최종·10월은 인쇄파트 설비별 실측 평균의 평균
+  매엽:      {target:0.84,     m:[0.8147,0.8141,0.8395,0.8585,0.7962,0.814,0.8054,0.7605,0.8242,0.7602]}, // ERP 생산지수보드 매엽 공정 평균(실측), 9월 최종·10월은 설비별 실측 평균
+  윤전:      {target:0.8533,   m:[0.8817,0.8543,0.8908,0.867,0.8899,0.8527,0.8809,0.8375,0.8528,0.8439]}, // ERP 생산지수보드 윤전 공정 평균(실측), 9월 최종·10월은 설비별 실측 평균
+  매엽1호기: {target:0.88,     m:[0.902,0.802,0.922,0.882,0.802,0.892,0.832,0.812,0.8529,0.85]}, // ERP 1~8월 평균 0.8559로 보정, 9월 최종·10월(10/1~10/16 확정분)은 ERP 생산지수보드 실측
+  매엽3호기: {target:0.78,     m:[0.719,0.799,0.739,0.759,0.809,0.789,0.789,0.779,0.7819,0.77]}, // ERP 1~8월 평균 0.7723으로 보정, 9월 최종·10월(10/1~10/16 확정분)은 ERP 생산지수보드 실측
+  매엽4호기: {target:0.89,     m:[0.907,0.876,0.887,1.008,0.877,0.826,0.826,0.715,0.8481,0.72]}, // ERP 1~8월 평균 0.8653으로 보정, 9월 최종·10월(10/1~10/16 확정분)은 ERP 생산지수보드 실측
+  매엽5호기: {target:0.81,     m:[0.75,0.79,0.82,0.79,0.71,0.75,0.789,0.739,0.8138,0.69]}, // ERP 1~8월 평균 0.7672로 보정, 9월 최종·10월(10/1~10/16 확정분)은 ERP 생산지수보드 실측
+  국윤전1호기:{target:0.83,    m:[0.81,0.801,0.851,0.841,0.841,0.871,0.801,0.751,0.7618,0.80]}, // ERP 1~8월 평균 0.8208로 보정, 9월 최종·10월(10/1~10/16 확정분)은 ERP 생산지수보드 실측
+  국윤전2호기:{target:0.79,    m:[0.792,0.752,0.822,0.812,0.832,0.762,0.802,0.752,0.7736,0.76]}, // ERP 1~8월 평균 0.7907로 보정, 9월 최종·10월(10/1~10/16 확정분)은 ERP 생산지수보드 실측
+  '46윤전':  {target:0.94,     m:[1.053,1.013,1.003,0.963,1.013,0.933,1.033,1.013,1.0230,0.97]}, // ERP 1~8월 평균 1.0029로 보정(설비명 ERP상 46윤전1호기), 9월 최종·10월(10/1~10/16 확정분)은 ERP 생산지수보드 실측
+};
+// ERP MES 품질관리-공정검사-부적합내역 실측치(2026-09-23 확인, 엑셀 폴백 중단) — 필터: 거래처≠(주)타라티피에스,
+// 책임부서=생산운영팀 또는 하위 파트("제판파트"/"인쇄파트"/"제본파트" 등), 책임담당자 존재, 사내외주구분=사내(01)
+const REAL_QC = { // 품질 불량건수(건) - 26년 목표는 전 항목 0건(제로 디펙트 정책)
+  전체:{target:0, m:[2,5,1,3,2,4,5,3,2,0]}, // 9월 최종·10월(0건)은 생산운영팀 6개 공정 전체 기준 "생산운영팀 대시보드" 세션 교차확인
+  파트:{target:0, m:[1,3,1,2,2,3,2,1,2,0]},
+  매엽:{target:0, m:[0,3,1,2,2,3,2,1,2,0]},
+  윤전:{target:0, m:[1,0,0,0,0,0,0,0,0,0]},
+  매엽1호기:{target:0, m:[0,0,0,0,0,0,0,1,1,0]}, // 9월 15일 1건(ERP 부적합내역 확인), 10월 신규 0건
+  매엽3호기:{target:0, m:[0,0,0,0,1,1,2,0,0,0]},
+  매엽4호기:{target:0, m:[0,0,0,1,1,0,0,0,1,0]}, // 9월 23일 1건(ERP 부적합내역 확인)
+  매엽5호기:{target:0, m:[0,3,1,1,0,2,0,0,0,0]},
+  국윤전1호기:{target:0, m:[0,0,0,0,0,0,0,0,0,0]},
+  국윤전2호기:{target:0, m:[0,0,0,0,0,0,0,0,0,0]},
+  '46윤전':{target:0, m:[1,0,0,0,0,0,0,0,0,0]},
+};
+// ERP MES 부적합내역의 "처리금액"(비용금액과 동일값, "기준금액"과는 다른 컬럼이므로 혼동 주의) 기준. 필터는 REAL_QC와 동일.
+const REAL_QCOST = { // 품질 불량비용(만원) - 26년 목표는 전 항목 0원. 설비별 비용은 별도 집계가 없어 설비별 실제 건수 비중으로 월별 안분
+  전체:{target:0, m:[20.7393,179.5568,63.7328,63.6751,150.6842,98.6227,287.3943,48.2,52.986,0]}, // 9월은 ERP 부적합내역 처리금액 실측(52.986만원=529,860원)
+  파트:{target:0, m:[11.5393,166.261,63.7328,38.6751,150.6842,69.3189,135.5093,31.2,52.986,0]},
+  매엽:{target:0, m:[0,166.261,63.7328,38.6751,150.6842,69.3189,135.5093,31.2,52.986,0]},
+  윤전:{target:0, m:[11.5393,0,0,0,0,0,0,0,0,0]},
+  매엽1호기:{target:0, m:[0,0,0,0,0,0,0,31.2,43.186,0]}, // 9월 15일 43.186만원(431,860원, ERP 실측)
+  매엽3호기:{target:0, m:[0,0,0,0,75.3421,23.1063,135.5093,0,0,0]},
+  매엽4호기:{target:0, m:[0,0,0,19.3376,75.3421,0,0,0,9.8,0]}, // 9월 23일 9.8만원(98,000원, ERP 실측)
+  매엽5호기:{target:0, m:[0,166.261,63.7328,19.3376,0,46.2126,0,0,0,0]},
+  국윤전1호기:{target:0, m:[0,0,0,0,0,0,0,0,0,0]},
+  국윤전2호기:{target:0, m:[0,0,0,0,0,0,0,0,0,0]},
+  '46윤전':{target:0, m:[11.5393,0,0,0,0,0,0,0,0,0]},
+};
+const REAL_VOL = { // 생산량(천통, 정미수량) - 26년 목표 별도 미설정(원본 목표값 0)
+  // 2026-09-22 실시간 ERP 확인(Claude in Chrome, 팀장님 로그인 세션으로 직접 접속) : ERP 제조현장관리-생산실적현황(타라) 화면의
+  // "정미수량"·"사내금액" 1~8월 누계를 설비별로 직접 조회해 확인함. 기존 엑셀 기준 "생산량"은 설비에 따라 정미수량과 차이가 있어
+  // (매엽1호기·국윤전1/2호기·46윤전은 거의 동일하지만, 매엽3·4·5호기는 정미수량이 기존 수치의 약 53~55% 수준) 월별 비중은 유지한 채
+  // 1~8월 누계가 ERP 실측치와 일치하도록 설비별로 보정함.
+  // 매엽 집계 = 자사 보유 설비(매엽1·3·4·5호기)만 합산. 상위작업장=매엽으로 잡히는 "제이드(매엽)"는 외주 협력업체로 확인되어 제외
+  // ("생산운영팀 현황판" 세션과 교차 확인 — 제판=CTP만 집계하고 외주 "천진기획(소부)"를 제외하는 기존 규칙과 동일하게 적용).
+  전체:{target:0, m:[40943,28263,47766,46527,38985,29827,39355,33811,31642,23454]}, // 인쇄파트(매엽+윤전) 정미수량과 동일(제판·중철·무선·코팅은 단위(판/부/매)가 달라 합산 불가)
+  파트:{target:0, m:[40943,28263,47766,46527,38985,29827,39355,33811,31642,23454]}, // 9월 최종(ERP 엑셀) / 10월은 ERP 입력분(10/1~10/19) 설비별 정미수량 합계
+  매엽:{target:0, m:[7258,6070,7454,7171,6943,6112,6606,5217,5657,3717]}, // 매엽1·3·4·5호기(자사 설비) 정미수량 합계, 9월 최종·10월은 ERP 입력분
+  윤전:{target:0, m:[33685,22193,40312,39356,32042,23715,32749,28594,25985,19737]}, // 국윤전1·2호기 + 46윤전1호기 실측 정미수량 합계, 9월 최종·10월은 ERP 입력분
+  매엽1호기:{target:0, m:[3692,3046,3868,3329,2983,3115,2983,2264,2279,1908]}, // 9월 최종/10월(ERP 입력분 10/1~10/19) ERP 정미수량 실측
+  매엽3호기:{target:0, m:[521,574,471,645,1301,856,1164,900,1126,622]}, // 9월 최종/10월(ERP 입력분 10/1~10/19) ERP 정미수량 실측
+  매엽4호기:{target:0, m:[1579,1269,1507,1841,1593,1294,1244,1052,1129,572]}, // 9월 최종/10월(ERP 입력분 10/1~10/19) ERP 정미수량 실측
+  매엽5호기:{target:0, m:[1466,1181,1608,1356,1066,847,1215,1001,1124,615]}, // 9월 최종/10월(ERP 입력분 10/1~10/19) ERP 정미수량 실측
+  국윤전1호기:{target:0, m:[8554,3951,12890,14953,9532,6652,8704,5963,6260,5617]}, // 9월 최종/10월(ERP 입력분 10/1~10/19) ERP 정미수량 실측
+  국윤전2호기:{target:0, m:[8107,3719,13268,15015,10044,7324,9116,5631,5000,5606]}, // 9월 최종/10월(ERP 입력분 10/1~10/19) ERP 정미수량 실측
+  '46윤전':{target:0, m:[17024,14523,14154,9388,12466,9739,14929,17000,14726,8514]}, // 9월 최종/10월(ERP 입력분 10/1~10/19) ERP 정미수량 실측
+};
+const REAL_REV = { // 생산매출(억원, 사내금액) - 26년 목표 별도 미설정(집계 항목)
+  // 지정 출처: ERP 생산관리>생산보고서>생산실적현황(타라)의 "사내금액"(설비별 취합) — 이번에도 ERP 화면에는 직접 접속하지 못했으나,
+  // 같은 값이 이미 확인·반영되어 있는 "TARA 생산운영팀 통합관리"(사내 확인용 대시보드, tara-production-operations.jhnamtara.chatgpt.site)를 읽어 실측치로 교체함 — 설비별 세부까지 확인 가능
+  전체:{target:0, m:[11.029,8.052,11.754,12.746,11.219,9.985,13.266,11.426,11.492,7.009]}, // 인쇄파트+제판+중철+무선+코팅 전체 합계(생산운영팀 전체), 9월 최종 1,149,177,056원(2026-10-14 ERP 정정: 9월 무선1·2호기 금액이 정상 단가로 수정되어 이상거래 제외 없이 무선 215,859,664원, 기존 2,285,368,779원에서 변경), 10월(10/1~10/19 ERP 입력분, 2026-10-19 수령) 700,916,016원(10/15 무선2호기 일계 1,638,272,000원 전액 제외 — 팀장 확정 2026-10-16; 10/16 무선2호기 6.60억원 거래도 같은 유형이라 제외 확정(팀장 2026-10-19); CTP에 10/21자로 입력된 324,000원 1건은 미래일자라 제외 — 팀장 확정 2026-10-19)(10/6 무선2호기 2.97억원 거래는 이상거래로 제외, 10/8 무선2호기 2.68억원 거래도 같은 기준으로 제외(팀장 확정 2026-10-12), 10/12 무선2호기 6.59억원 거래도 같은 기준으로 제외 — 팀장 확정 2026-10-13; 10/13 무선2호기 3.86억원 거래도 제외 확정, 10/14(15.9억원)·10/15(16.3억원) 무선2호기 거래도 같은 유형이라 제외 확정(팀장 2026-10-15) — 팀장 방침 2026-10-14: 10월 무선2호기 이상거래(10/6·10/8·10/12·10/13·10/14·10/15)는 우선 제외하고 월이 바뀌어 ERP에서 금액이 정정되면 정정값으로 반영) — 생산운영팀 대시보드 세션 확정치(V88)
+  파트:{target:0, m:[6.290,4.249,6.260,7.325,5.297,4.989,5.872,4.608,4.667,3.413]}, // 9월 최종/10월(ERP 입력분) 설비별 ERP 사내금액 실측 합계
+  매엽:{target:0, m:[2.650,1.926,2.388,2.784,2.204,2.387,2.528,1.774,2.097,1.334]},
+  윤전:{target:0, m:[3.640,2.323,3.872,4.540,3.094,2.602,3.344,2.834,2.571,2.079]},
+  매엽1호기:{target:0, m:[1.322,0.802,0.956,1.122,0.864,1.034,1.024,0.776,0.812,0.653]}, // 9월 최종/10월(ERP 입력분 10/1~10/19) ERP 사내금액 실측
+  매엽3호기:{target:0, m:[0.229,0.216,0.298,0.338,0.430,0.408,0.435,0.341,0.383,0.239]}, // 9월 최종/10월(ERP 입력분 10/1~10/19) ERP 사내금액 실측
+  매엽4호기:{target:0, m:[0.599,0.455,0.677,0.726,0.511,0.529,0.544,0.329,0.448,0.240]}, // 9월 최종/10월(ERP 입력분 10/1~10/19) ERP 사내금액 실측
+  매엽5호기:{target:0, m:[0.500,0.452,0.457,0.598,0.399,0.416,0.525,0.328,0.453,0.201]}, // 9월 최종/10월(ERP 입력분 10/1~10/19) ERP 사내금액 실측
+  국윤전1호기:{target:0, m:[1.544,0.690,1.329,1.784,1.301,0.911,1.100,0.958,0.988,0.815]}, // 9월 최종/10월(ERP 입력분 10/1~10/19) ERP 사내금액 실측
+  국윤전2호기:{target:0, m:[1.393,0.659,1.293,1.910,1.044,1.077,1.236,0.936,0.626,0.771]}, // 9월 최종/10월(ERP 입력분 10/1~10/19) ERP 사내금액 실측
+  '46윤전':{target:0, m:[0.704,0.974,1.251,0.846,0.748,0.614,1.007,0.940,0.956,0.494]}, // 9월 최종/10월(ERP 입력분 10/1~10/19) ERP 사내금액 실측
+};
+
+const TPI_BY_SCOPE = buildScope(REAL_TPI, '');
+const QC_BY_SCOPE = buildScope(REAL_QC, '건');
+const QCOST_BY_SCOPE = buildScope(REAL_QCOST, '만원');
+const VOL_BY_SCOPE = buildScope(REAL_VOL, '천통');
+const REV_BY_SCOPE = buildScope(REAL_REV, '억원');
+
+const ALL_SCOPES = ['전체','파트','매엽','윤전','매엽1호기','매엽3호기','매엽4호기','매엽5호기','국윤전1호기','국윤전2호기','46윤전'];
+const PERF = {};
+ALL_SCOPES.forEach(s=>{
+  PERF[s] = {};
+  if(TPI_BY_SCOPE[s]) PERF[s].TPI = TPI_BY_SCOPE[s];
+  if(QC_BY_SCOPE[s]) PERF[s].품질건수 = QC_BY_SCOPE[s];
+  if(QCOST_BY_SCOPE[s]) PERF[s].품질비용 = QCOST_BY_SCOPE[s];
+  if(VOL_BY_SCOPE[s]) PERF[s].생산량 = VOL_BY_SCOPE[s];
+  if(REV_BY_SCOPE[s]) PERF[s].생산매출 = REV_BY_SCOPE[s];
+});
+
+const PERF_TABS = ['전체','파트','매엽','윤전'];
+const perfState = {tab:'파트', equip:null};
+const KPI_COLOR = {전체:'#0b4f4a', 파트:'#1baf7a', 매엽:'#2a78d6', 윤전:'#eb6834',
+  매엽1호기:'#2a78d6', 매엽3호기:'#2a78d6', 매엽4호기:'#2a78d6', 매엽5호기:'#2a78d6',
+  국윤전1호기:'#eb6834', 국윤전2호기:'#eb6834', '46윤전':'#eb6834'};
+const METRIC_COLOR = {TPI:'#2a78d6', 품질건수:'#eb6834', 품질비용:'#e0567e', 생산량:'#1baf7a', 생산매출:'#7a5cd6'};
+const METRIC_LABEL = {};
+const METRIC_ORDER = ['TPI','품질건수','품질비용','생산량','생산매출'];
+const OVERVIEW_METRICS = ['TPI','품질건수','품질비용','생산량','생산매출'];
+const ACTUAL_MONTHS = 10; // 1~9월은 실적 집계 완료(9월 월말 확정), 10월은 진행중(ERP 입력분 기준 일부 집계), 11~12월은 예정(회색)
+const MONTH_LABELS = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
+
+function aggSum(arr){ return Math.round(arr.reduce((a,b)=>a+b,0)*100)/100; }
+function aggAvg(arr){ return Math.round((aggSum(arr)/arr.length)*1000)/1000; }
+const SUM_METRICS = new Set(['생산량','품질건수','품질비용','생산매출']);
+// 지표별 표시 형식 통일: TPI는 항상 소수 2자리(단위 없음), 품질비용은 만원 단위 소수점 없이, 그 외는 천단위 구분 정수/소수
+function fmtMetric(m, v){
+  if(m==='TPI') return (+v).toFixed(2);
+  if(m==='품질비용') return Math.round(+v).toLocaleString();
+  return (+v).toLocaleString(undefined, {maximumFractionDigits: Number.isInteger(v)?0:2});
+}
+
+// ---- 설비(개별 기기)별 실적 : 매엽1·3·4·5호기, 국윤전1~2호기, 46윤전 (매엽2호기는 결번 · 실제 미보유) ----
+const EQUIPMENT = {
+  매엽: ['매엽1호기','매엽3호기','매엽4호기','매엽5호기'],
+  윤전: ['국윤전1호기','국윤전2호기','46윤전'],
+};
+const ALL_EQUIPMENT = ['매엽1호기','매엽3호기','매엽4호기','매엽5호기','국윤전1호기','국윤전2호기','46윤전'];
+const EQUIP_PARENT = {};
+Object.entries(EQUIPMENT).forEach(([proc, machines])=>machines.forEach(name=>EQUIP_PARENT[name]=proc));
+
+// ---- 헤드라인 KPI (실적 화면 상단, 6개 지표 모두 표시) ----
+function renderPerfHeadline(){
+  const data = PERF['파트']; // 헤드라인은 항상 인쇄파트 전체(매엽+윤전) 누계 기준
+  document.getElementById('perfHeadlineRow').innerHTML = METRIC_ORDER.map(m=>{
+    const d = data[m]; if(!d) return '';
+    const actual = d.values.slice(0, ACTUAL_MONTHS);
+    const isSum = SUM_METRICS.has(m);
+    const agg = isSum ? aggSum(actual) : aggAvg(actual);
+    const targetShown = isSum ? Math.round(d.target*ACTUAL_MONTHS*1000)/1000 : d.target;
+    const method = isSum ? '누계' : '평균';
+    const isTally = (m==='생산량'||m==='생산매출');
+    const hit = isTally ? true : (isSum ? agg<=targetShown : agg>=d.target);
+    const pillTxt = isTally ? '집계 완료' : (hit ? '목표 달성' : '목표 미달');
+    const pillCls = hit ? 'good' : 'warn';
+    const targetTxt = (isTally && targetShown===0) ? '목표 미설정' : `목표 ${fmtMetric(m,targetShown)}${d.unit}`;
+    return `<div class="kpi-card" data-metric="${m}">
+      <div class="head"><span class="label">${METRIC_LABEL[m]||m}</span><span class="pill ${pillCls}">${pillTxt}</span></div>
+      <div class="big">${fmtMetric(m,agg)}${d.unit}</div>
+      <div class="sub">${targetTxt} · 1~${ACTUAL_MONTHS}월 ${method}</div>
+    </div>`;
+  }).join('');
+}
+
+// ---- 공정별 실적 상세: 지표별 미니 막대그래프 카드 그리드 ----
+function miniBars(m, values, target, unit, color){
+  return `<div class="mini-bar-row">${values.map((v,i)=>{
+    const pending = i>=ACTUAL_MONTHS;
+    const max = Math.max(...values, target)*1.1 || 1;
+    const h = pending ? 6 : Math.max(4, Math.round((v/max)*80));
+    return `<div class="mini-bar-col">
+      <div class="mini-bar-val">${pending?'':fmtMetric(m,v)}</div>
+      <div class="mini-bar ${pending?'pending':''}" style="height:${h}px; ${pending?'':'background:'+color+';'}"></div>
+      <div class="mini-bar-month">${MONTH_LABELS[i].replace('월','')}</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+function miniBarsDual(valuesA, valuesB, colorA, colorB){
+  return `<div class="mini-bar-row">${valuesA.map((v,i)=>{
+    const pending = i>=ACTUAL_MONTHS;
+    const max = Math.max(...valuesA, ...valuesB)*1.1 || 1;
+    const ha = pending ? 6 : Math.max(4, Math.round((v/max)*80));
+    const hb = pending ? 6 : Math.max(4, Math.round((valuesB[i]/max)*80));
+    return `<div class="mini-bar-col">
+      <div class="mini-bar-dual">
+        <div class="mini-bar ${pending?'pending':''}" style="height:${ha}px; ${pending?'':'background:'+colorA+';'}"></div>
+        <div class="mini-bar ${pending?'pending':''}" style="height:${hb}px; ${pending?'':'background:'+colorB+';'}"></div>
+      </div>
+      <div class="mini-bar-month">${MONTH_LABELS[i].replace('월','')}</div>
+    </div>`;
+  }).join('')}</div>`;
+}
+// N-설비 비교용 미니 막대그래프(범례 포함) - series: [{label, values, color}]
+function miniBarsMulti(m, series){
+  const allVals = series.flatMap(s=>s.values);
+  const max = Math.max(...allVals)*1.1 || 1;
+  const bars = MONTH_LABELS.slice(0,12).map((_,i)=>{
+    const pending = i>=ACTUAL_MONTHS;
+    return `<div class="mini-bar-col">
+      <div class="mini-bar-multi">${series.map(s=>{
+        const h = pending ? 6 : Math.max(3, Math.round((s.values[i]/max)*130));
+        const label = pending ? '' : (m==='품질비용' ? Math.round(s.values[i]).toLocaleString() : fmtMetric(m,s.values[i]));
+        return `<div class="mini-bar-multi-item">
+          <div class="mini-bar-val mini-bar-val-sm">${label}</div>
+          <div class="mini-bar ${pending?'pending':''}" style="height:${h}px; ${pending?'':'background:'+s.color+';'}"></div>
+        </div>`;
+      }).join('')}</div>
+      <div class="mini-bar-month">${MONTH_LABELS[i].replace('월','')}</div>
+    </div>`;
+  }).join('');
+  const legend = `<div class="mini-bar-legend">${series.map(s=>`<span class="lg-item"><i class="lg-dot" style="background:${s.color};"></i>${s.label}</span>`).join('')}</div>`;
+  return `<div class="mini-bar-row tall">${bars}</div>${legend}`;
+}
+
+function renderEquipRow(rowEl, activeEquip){
+  rowEl.hidden = false;
+  rowEl.innerHTML = `<button data-tab="" class="${!activeEquip?'active':''}">설비 전체</button>` +
+    ALL_EQUIPMENT.map(name=>`<button data-tab="${name}" class="${activeEquip===name?'active':''}">${name}</button>`).join('');
+}
+
+function renderProcGrid(){
+  const tab = perfState.tab, equip = perfState.equip;
+  const scope = equip || tab;
+  const label = equip || `${tab} (1월~12월)`;
+  document.getElementById('procDetailTitle').textContent = equip ? `공정별 실적 상세 — ${equip} (1월~12월)` : `공정별 실적 상세 — ${tab} (1월~12월)`;
+  renderEquipRow(document.getElementById('perfEquipRow'), equip);
+  const data = PERF[scope];
+  const color = KPI_COLOR[scope];
+  const grid = document.getElementById('procGrid');
+
+  const cards = METRIC_ORDER.map(m=>{
+    const d = data[m];
+    if(!d){
+      return `<div class="proc-card" data-metric="${m}">
+        <div class="proc-head"><h4>${METRIC_LABEL[m]||m}</h4></div>
+        <div class="proc-empty">ERP 미연동으로 설비별 세부 수치는 제공되지 않습니다('전체'·'파트'·'매엽'·'윤전' 단위로만 확인 가능)</div>
+      </div>`;
+    }
+    const actual = d.values.slice(0, ACTUAL_MONTHS);
+    const isSum = SUM_METRICS.has(m);
+    const agg = isSum ? aggSum(actual) : aggAvg(actual);
+    const targetShown = isSum ? Math.round(d.target*ACTUAL_MONTHS*1000)/1000 : d.target;
+    const method = isSum ? '누계' : '평균';
+    const isTally = (m==='생산량'||m==='생산매출');
+    const hit = isTally ? true : (isSum ? agg<=targetShown : agg>=d.target);
+    const isAggTab = (tab==='전체'||tab==='파트');
+    const targetTxt = (isTally && targetShown===0) ? '목표 미설정' : `목표 ${fmtMetric(m,targetShown)}${d.unit}`;
+    let barsHtml;
+    if(isTally && isAggTab){
+      barsHtml = miniBarsDual(PERF.매엽[m].values, PERF.윤전[m].values, KPI_COLOR.매엽, KPI_COLOR.윤전);
+    } else {
+      barsHtml = miniBars(m, d.values, d.target, d.unit, METRIC_COLOR[m] || color);
+    }
+    const wideCls = (m==='생산량'||m==='생산매출') ? ' wide' : '';
+    const hasUnit = !!d.unit;
+    const pillHtml = `<span class="pill ${hit?'good':'warn'}"><span class="dot"></span>${targetTxt}</span>`;
+    const headRight = hasUnit ? `<span class="unit-tag">단위: ${d.unit}</span>` : pillHtml;
+    const statLeft = hasUnit ? pillHtml : '';
+    let statRight;
+    if(isTally && isAggTab){
+      const mAgg = aggSum(PERF.매엽[m].values.slice(0,ACTUAL_MONTHS));
+      const yAgg = aggSum(PERF.윤전[m].values.slice(0,ACTUAL_MONTHS));
+      statRight = `<span class="stat-right"><span class="label period">1~${ACTUAL_MONTHS}월 ${method}</span><span class="val" style="display:flex; flex-direction:column; align-items:flex-end; gap:2px;"><span>매엽 ${fmtMetric(m,mAgg)}${d.unit}</span><span>윤전 ${fmtMetric(m,yAgg)}${d.unit}</span></span></span>`;
+    } else {
+      statRight = `<span class="stat-right"><span class="label period">1~${ACTUAL_MONTHS}월 ${method}</span><span class="val">${fmtMetric(m,agg)}${d.unit}</span></span>`;
+    }
+    return `<div class="proc-card${wideCls}" data-metric="${m}">
+      <div class="proc-head"><h4>${METRIC_LABEL[m]||m}</h4>${headRight}</div>
+      <div class="proc-stat with-pill">${statLeft}${statRight}</div>
+      ${barsHtml}
+    </div>`;
+  }).join('');
+  grid.innerHTML = cards;
+
+  const qList = equip ? qualities.filter(q=>q.equip===equip) : qualities.filter(q=>inScope(q.proc, tab));
+  document.getElementById('procQualityWrap').innerHTML = `<div class="proc-quality-section">
+    <h4>품질 이슈 내역 (${equip || tab})</h4>
+    ${qList.length
+      ? `<div class="proc-quality-table-wrap"><table class="proc-quality-table">
+          <thead><tr><th>날짜</th><th>설비</th><th>내용</th><th>책임담당자</th><th>품질비용</th></tr></thead>
+          <tbody>${qList.map(q=>`<tr><td>${q.month}</td><td>${q.equip}</td><td class="left">${q.content.split('\n')[0]}</td><td>${q.person}</td><td>${Math.round(q.cost).toLocaleString()}만원</td></tr>`).join('')}</tbody>
+        </table></div>`
+      : `<div class="proc-quality-list"><div class="proc-quality-item" style="color:var(--ink-muted);">1~${ACTUAL_MONTHS}월 중 품질 이슈 없음</div></div>`}
+  </div>`;
+}
+
+function jumpToProcCard(metric){
+  const card = document.querySelector(`#procGrid .proc-card[data-metric="${metric}"]`);
+  if(!card) return;
+  card.scrollIntoView({behavior:'smooth', block:'center'});
+  card.classList.add('flash');
+  setTimeout(()=>card.classList.remove('flash'), 1000);
+}
+
+function renderPerf(){
+  renderPerfHeadline();
+  renderProcGrid();
+}
+renderPerf();
+renderQuality('파트');
+
+// ---------------- 핵심 현황 카드 ----------------
+const ICONS = {
+  work:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><path d="M9 11l2 2 4-4" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="4" width="18" height="17" rx="2"/></svg>',
+  equip:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2.2"><circle cx="12" cy="12" r="3"/><path d="M19 13.5a7 7 0 000-3l1.8-1.2-1.8-3.1-2.1.7a7 7 0 00-2.8-1.6L13.7 3h-3.4l-.4 2.3a7 7 0 00-2.8 1.6l-2.1-.7-1.8 3.1L5 10.5a7 7 0 000 3l-1.8 1.2 1.8 3.1 2.1-.7a7 7 0 002.8 1.6l.4 2.3h3.4l.4-2.3a7 7 0 002.8-1.6l2.1.7 1.8-3.1z"/></svg>',
+  quality:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linejoin="round"><path d="M12 2l9 9-9 11-9-11z"/></svg>',
+  safety:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linejoin="round"><path d="M12 3l7 3v6c0 5-3.2 7.8-7 9-3.8-1.2-7-4-7-9V6z"/></svg>',
+  people:'<svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17.5" cy="8.5" r="2.5"/><path d="M16 14.2c2.7.3 4.5 2.3 4.5 5.3"/></svg>',
+};
+// 핵심 현황 카드는 인쇄파트(매엽+윤전) 범위로 집계(팀 전체 항목 제외)
+const partTodos = todos.filter(t=>inScope(t.tag,'파트'));
+const partEquip = equipment.filter(e=>inScope(e.proc,'파트'));
+const partQuality = qualities.filter(q=>inScope(q.proc,'파트'));
+const partAccidents = accidents.filter(a=>inScope(a.proc,'파트'));
+const _vacCut = (()=>{ const d=new Date(); d.setDate(d.getDate()-30); return localDateStr(d); })();
+const partVacations = vacations.filter(v=>inScope(v.proc,'파트') && (v.open || v.end >= _vacCut));
+const equipDone = partEquip.filter(e=>e.status==='완료').length;
+const equipProg = partEquip.filter(e=>e.status==='진행중').length;
+const equipPlan = partEquip.filter(e=>e.status==='예정').length;
+const todoOpen = partTodos.filter(t=>!t.done).length;
+const matTodo = todos.filter(t=>t.tag==='매엽').length, yunTodo = todos.filter(t=>t.tag==='윤전').length;
+const matAcc = accidents.filter(a=>a.proc==='매엽').length, yunAcc = accidents.filter(a=>a.proc==='윤전').length;
+const matVac = partVacations.filter(v=>v.proc==='매엽').length, yunVac = partVacations.filter(v=>v.proc==='윤전').length;
+
+const STATS = [
+  {title:'파트별 업무', ic:'work', cls:'c-teal', jump:'work', count: partTodos.length, sub:`매엽${matTodo}·윤전${yunTodo} · 미완료 ${todoOpen}건`},
+  {title:'설비·정비', ic:'equip', cls:'c-orange', jump:'equip', count: partEquip.length, sub:`예정 ${equipPlan}·진행중 ${equipProg}·완료 ${equipDone}`},
+  {title:'품질·이슈', ic:'quality', cls:'c-pink', jump:'quality', count: partQuality.length, sub:`매엽${qualities.filter(q=>q.proc==='매엽').length}·윤전${qualities.filter(q=>q.proc==='윤전').length}`},
+  {title:'안전관리', ic:'safety', cls:'c-blue', jump:'safety', count: partAccidents.length, sub:`매엽${matAcc}·윤전${yunAcc} · 치료중 ${accidents.filter(a=>a.status==='치료중').length}건`},
+  {title:'인원·휴가', ic:'people', cls:'c-purple', jump:'people', count: partVacations.length, sub:`매엽${matVac}·윤전${yunVac} · 휴가중 ${partVacations.filter(v=>v.status==='휴가중').length}건`},
+];
+document.getElementById('statRow').innerHTML = STATS.map(s=>`
+  <div class="stat-card" data-jump="${s.jump}">
+    <div class="head"><span class="ic ${s.cls}">${ICONS[s.ic]}</span>${s.title}</div>
+    <div class="big">${s.count}건</div>
+    <div class="sub">${s.sub}</div>
+  </div>`).join('');
+
+// ---------------- 헤드라인 KPI (종합대시보드) : TPI·품질건수·품질비용·생산량·생산매출 ----------------
+const HEADLINE_LABEL = {TPI:'TPI', 품질건수:'품질 불량·클레임', 품질비용:'품질 불량비용', 생산량:'생산량', 생산매출:'생산매출'};
+const ovState = {metric:'TPI', tab:'파트', equip:null};
+
+function headlineTitle(m, scope, tab){
+  if(m==='TPI') return (scope==='전체'?'종합':scope)+' TPI';
+  if(m==='생산량') return (tab==='매엽'||tab==='윤전') ? `생산량(${scope})` : '생산량(매엽·윤전)';
+  if(m==='생산매출') return (tab==='매엽'||tab==='윤전') ? `생산매출(${scope})` : (scope==='전체' ? '생산매출(전체)' : '생산매출(인쇄파트)');
+  return HEADLINE_LABEL[m];
+}
+
+function renderHeadline(){
+  const tab = ovState.tab, equip = ovState.equip;
+  const scope = equip || tab;
+  renderEquipRow(document.getElementById('ovEquipRow'), equip);
+  document.getElementById('headlineRow').innerHTML = OVERVIEW_METRICS.map(m=>{
+    const d = PERF[scope][m];
+    if(!d){
+      return `<div class="kpi-card disabled" data-metric="${m}">
+        <div class="head"><span class="label">${headlineTitle(m,scope,tab)}</span></div>
+        <div class="proc-empty" style="padding:8px 0;">'${scope}'에서는 표시되지 않는 지표입니다</div>
+      </div>`;
+    }
+    const isSum = SUM_METRICS.has(m);
+    const actual = d.values.slice(0, ACTUAL_MONTHS);
+    const agg = isSum ? aggSum(actual) : aggAvg(actual);
+    const targetShown = isSum ? Math.round(d.target*ACTUAL_MONTHS*1000)/1000 : d.target;
+    const method = isSum ? '누계' : '평균';
+    let bigTxt, subTxt, pillTxt, pillCls;
+    if(m==='TPI'){
+      bigTxt = fmtMetric(m,agg);
+      const okTpi = agg>=d.target;
+      pillTxt = okTpi?'목표 달성':'목표 미달'; pillCls = okTpi?'good':'warn';
+      subTxt = `연목표 ${fmtMetric(m,d.target)} · ${MONTH_LABELS[ACTUAL_MONTHS-1]} ${fmtMetric(m,d.values[ACTUAL_MONTHS-1])}`;
+    } else if(m==='생산량'){
+      bigTxt = fmtMetric(m,agg)+d.unit;
+      pillTxt='집계 완료'; pillCls='good';
+      if(!equip && (tab==='전체'||tab==='파트')){
+        const matAgg = aggSum(PERF.매엽.생산량.values.slice(0,ACTUAL_MONTHS));
+        const yunAgg = aggSum(PERF.윤전.생산량.values.slice(0,ACTUAL_MONTHS));
+        subTxt = `1~${ACTUAL_MONTHS}월 누계 · 매엽 ${fmtMetric(m,matAgg)}${d.unit} · 윤전 ${fmtMetric(m,yunAgg)}${d.unit}`;
+      } else {
+        subTxt = `1~${ACTUAL_MONTHS}월 누계`;
+      }
+    } else if(m==='생산매출'){
+      bigTxt = agg.toFixed(1)+d.unit;
+      pillTxt='집계 완료'; pillCls='good';
+      if(!equip && (tab==='전체'||tab==='파트')){
+        const matRev = aggSum(PERF.매엽.생산매출.values.slice(0,ACTUAL_MONTHS));
+        const yunRev = aggSum(PERF.윤전.생산매출.values.slice(0,ACTUAL_MONTHS));
+        subTxt = `1~${ACTUAL_MONTHS}월 누계 · 매엽 ${matRev.toFixed(1)}${d.unit} · 윤전 ${yunRev.toFixed(1)}${d.unit}`;
+      } else {
+        subTxt = `1~${ACTUAL_MONTHS}월 누계 ${agg.toFixed(1)}${d.unit}`;
+      }
+    } else {
+      const ok = agg<=targetShown;
+      bigTxt = fmtMetric(m,agg)+d.unit;
+      pillTxt = ok?'목표 달성':'목표 초과'; pillCls = ok?'good':'warn';
+      subTxt = `목표 ${fmtMetric(m,targetShown)}${d.unit} 이하 · 1~${ACTUAL_MONTHS}월 ${method}`;
+    }
+    return `<div class="kpi-card" data-metric="${m}" style="--metric-color:${METRIC_COLOR[m]}">
+      <div class="head"><span class="label">${headlineTitle(m,scope,tab)}</span><span class="pill ${pillCls}">${pillTxt}</span></div>
+      <div class="big">${bigTxt}</div>
+      <div class="sub">${subTxt}</div>
+    </div>`;
+  }).join('');
+  document.querySelectorAll('#headlineRow .kpi-card:not(.disabled)').forEach(c=>c.classList.toggle('selected', c.dataset.metric===ovState.metric));
+}
+
+function drawOverviewChart(metric){
+  const scope = ovState.equip || ovState.tab;
+  const d = PERF[scope][metric];
+  const color = METRIC_COLOR[metric] || '#0f6f68';
+  document.getElementById('ovChartTitle').textContent = `${headlineTitle(metric,scope,ovState.tab)} 실적 추이 (월별)`;
+  const SRC_NOTE = {
+    TPI: ' · 출처: ERP MES 실적관리-작업실적현황-생산지수보드(타라TPS), 2026-10-19 기준(10월은 10/1~10/16 확정분)(엑셀 폴백 중단)',
+    품질건수: ' · 출처: ERP MES 품질관리-공정검사-부적합내역, 2026-10-19 기준(엑셀 폴백 중단) · 거래처≠(주)타라티피에스, 책임부서=생산운영팀 또는 하위 파트, 담당자 존재, 사내외주구분=사내 기준',
+    품질비용: ' · 출처: ERP MES 품질관리-공정검사-부적합내역(처리금액), 2026-10-19 기준(엑셀 폴백 중단) · 필터 기준은 품질건수와 동일',
+    생산량: ' · 출처: ERP 제조현장관리-생산실적현황(타라)의 "정미수량", ERP 원본 엑셀(2026-10-19 기준, 9월 최종·10월은 10/1~10/19 입력분, 설비별 실측)',
+    생산매출: ' · 출처: ERP 제조현장관리-생산실적현황(타라)의 "사내금액", ERP 원본 엑셀(2026-10-19 기준, 9월 최종·10월은 10/1~10/19 입력분, 설비별 실측)',
+  };
+  document.getElementById('ovChartSub').textContent = `목표 ${fmtMetric(metric,d.target)}${d.unit} 기준선(빨간선) · 실적이 집계된 달만 표시됩니다 · 데이터 없는 ${12-ACTUAL_MONTHS}개월은 회색으로 표시${SRC_NOTE[metric]||''}`;
+  document.getElementById('ovChartUnit').textContent = metric==='TPI' ? '지수(0~1)' : `단위: ${d.unit}`;
+
+  const svg = document.getElementById('ovChartSvg');
+  const W=1180,H=280,padL=50,padR=24,padT=26,padB=34;
+  const plotW=W-padL-padR, plotH=H-padT-padB;
+  // 등락이 잘 보이도록 0을 강제 포함하지 않고 실제 값 범위에 맞춰 확대
+  const actualVals = d.values.slice(0,ACTUAL_MONTHS);
+  const spread = Math.max(...actualVals, d.target) - Math.min(...actualVals, d.target);
+  const pad = Math.max(spread*0.25, (Math.max(...actualVals)||1)*0.04);
+  const maxV = Math.max(...actualVals, d.target) + pad;
+  const minV = Math.max(0, Math.min(...actualVals, d.target) - pad);
+  const x = i => padL + i*(plotW/11);
+  const y = v => padT + plotH - ((v-minV)/(maxV-minV||1))*plotH;
+
+  let grid='';
+  for(let g=0; g<=4; g++){
+    const gv = minV + (maxV-minV)*g/4;
+    const gy = y(gv);
+    grid += `<line x1="${padL}" y1="${gy}" x2="${W-padR}" y2="${gy}" stroke="#eef2f2" stroke-width="1"/>`;
+    grid += `<text x="${padL-8}" y="${gy+4}" font-size="10" fill="#7c8888" text-anchor="end">${fmtMetric(metric,gv)}</text>`;
+  }
+
+  const targetY = y(d.target);
+  const targetLine = `<line x1="${padL}" y1="${targetY}" x2="${W-padR}" y2="${targetY}" stroke="#d03b3b" stroke-width="1.5" stroke-dasharray="5,4"/>
+    <text x="${W-padR}" y="${targetY-6}" font-size="10.5" fill="#d03b3b" text-anchor="end">목표 ${fmtMetric(metric,d.target)}${d.unit}</text>`;
+
+  const actualPts = d.values.slice(0,ACTUAL_MONTHS).map((v,i)=>`${x(i)},${y(v)}`).join(' ');
+  const line = `<polyline points="${actualPts}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+
+  let marks='';
+  d.values.forEach((v,i)=>{
+    const pending = i>=ACTUAL_MONTHS;
+    if(!pending){
+      marks += `<g class="ov-pt-group">
+        <circle cx="${x(i)}" cy="${y(v)}" r="4.5" fill="${color}" stroke="#fff" stroke-width="1.5" class="ovpt"/>
+        <text x="${x(i)}" y="${y(v)-11}" font-size="11" font-weight="700" fill="#0f1b1b" text-anchor="middle" class="ov-val-text">${fmtMetric(metric,v)}</text>
+        <circle cx="${x(i)}" cy="${y(v)}" r="13" fill="transparent" class="ov-hit" data-label="${MONTH_LABELS[i]}" data-val="${fmtMetric(metric,v)}${d.unit}"/>
+      </g>`;
+    } else {
+      marks += `<circle cx="${x(i)}" cy="${H-padB}" r="3" fill="#c8d0d0"/>`;
+    }
+    marks += `<text x="${x(i)}" y="${H-8}" font-size="10.5" fill="#7c8888" text-anchor="middle">${MONTH_LABELS[i]}</text>`;
+  });
+
+  svg.innerHTML = grid + targetLine + line + marks;
+
+  const tooltip = document.getElementById('ovTooltip');
+  svg.querySelectorAll('.ov-hit').forEach(p=>{
+    p.addEventListener('mousemove', ()=>{
+      const rect = svg.getBoundingClientRect();
+      const scale = rect.width / W;
+      tooltip.style.display='block';
+      tooltip.style.left = (parseFloat(p.getAttribute('cx'))*scale) + 'px';
+      tooltip.style.top = (parseFloat(p.getAttribute('cy'))*scale) + 'px';
+      tooltip.textContent = `${p.dataset.label} · ${p.dataset.val}`;
+    });
+    p.addEventListener('mouseleave', ()=> tooltip.style.display='none');
+  });
+}
+
+function selectOverviewMetric(metric){
+  ovState.metric = metric;
+  renderHeadline();
+  drawOverviewChart(metric);
+}
+
+renderHeadline();
+drawOverviewChart(ovState.metric);
+</script>
+
+
+
+</body>
+</body></html>

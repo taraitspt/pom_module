@@ -1,0 +1,175 @@
+# === IDE ===
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+
+# === OS ===
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === Java / Gradle ===
+pom-module-api/build/
+pom-module-api/.gradle/
+pom-module-api/bin/
+pom-module-api/out/
+*.class
+*.jar
+*.war
+
+# === Node / Frontend ===
+pom-module-web/node_modules/
+pom-module-web/dist/
+pom-module-web/.vite/
+
+# === Playwright MCP ===
+.playwright-mcp/
+
+# === Claude ===
+# 공유 구성(스킬/서브에이전트/훅/settings.json)은 커밋. 개인 로컬 설정만 무시.
+.claude/settings.local.json
+
+# === Environment / Secrets ===
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# === Test screenshots ===
+*.png
+# 백엔드 정적 리소스(인감 도장 등)는 의도적으로 포함
+!pom-module-api/src/main/resources/images/*.png
+# 프론트 브랜드 에셋(로고 등)은 의도적으로 포함
+!pom-module-web/src/assets/**/*.png
+# PWA·홈 화면 아이콘(public/pwa-*.png, apple-touch-icon.png) — 빠지면 앱 설치 아이콘이 깨진다(2026-10-07)
+!pom-module-web/public/*.png
+
+# === Logs ===
+*.log
+
+# === Test data ===
+test-*.json
+login-test.json
+test-api.sh
+
+# === Build artifacts ===
+pom-module-web/tsconfig.tsbuildinfo
+pom-module-web/tsconfig.node.tsbuildinfo
+pom-module-web/vite.config.d.ts
+pom-module-web/vite.config.js
+pom-module-web/dist.tar.gz
+
+# === MCP / Tooling ===
+.mcp.json
+.serena/
+
+# === SSM / 임시 파라미터 ===
+.tmp-*.json
+.tmp-*/
+ssm_params.json
+check_dept_end_dt.py
+
+# === 스크래치/디버그 e2e (커밋된 정식 테스트는 e2e/00-*, 01-*, ... 처럼 번호 prefix) ===
+pom-module-web/e2e/check-*.spec.ts
+pom-module-web/e2e/debug-*.spec.ts
+pom-module-web/e2e/screenshot-*.spec.ts
+pom-module-web/e2e/find-*.spec.ts
+pom-module-web/e2e/verify-*.spec.ts
+pom-module-web/e2e/full-detail-*.spec.ts
+pom-module-web/e2e/dump-*.spec.ts
+pom-module-web/e2e/ui-detail-*.spec.ts
+pom-module-web/e2e/bug06-*.spec.ts
+pom-module-web/e2e/bug07-*.spec.ts
+pom-module-web/e2e/delete-*.spec.ts
+pom-module-web/e2e/gap-*.spec.ts
+pom-module-web/e2e/live-*.spec.ts
+pom-module-web/e2e/pr*.spec.ts
+pom-module-web/e2e/phase*.spec.ts
+pom-module-web/e2e/we*.spec.ts
+pom-module-web/e2e/search*.spec.ts
+pom-module-web/e2e/change*.spec.ts
+pom-module-web/e2e-local/
+pom-module-web/d1_check.*
+diag.mjs
+.tools/
+.gstack/
+pom-module-web/playwright-report/
+pom-module-web/test-results/
+pom-module-web/e2e/v31-*.spec.ts
+pom-module-web/e2e/v34-*.spec.ts
+pom-module-web/e2e/workinfo-*.spec.ts
+pom-module-web/e2e/visual-*.spec.ts
+pom-module-web/e2e/local-*.spec.ts
+pom-module-web/e2e/local-*.ts
+pom-module-web/e2e/write-spec.mjs
+pom-module-web/e2e/pr36v-*.ts
+pom-module-web/e2e/t.txt
+pom-module-web/qa*.cjs
+pom-module-web/qa*.js
+pom-module-web/wehago*.cjs
+pom-module-web/wehago*.js
+pom-module-web/gen-runner.js
+pom-module-web/playwright-local.config.ts
+pom-module-web/rt-runner.*
+pom-module-web/rt-test.js
+pom-module-api/build-log.txt
+
+# === 추가 스크래치/임시 산출물 (2026-06 정리) ===
+# e2e 디버그·회귀 스크래치 스펙 (정식 스펙은 00-/01-… 번호 prefix, helpers.ts 등은 추적 유지)
+pom-module-web/e2e/qa-*.spec.ts
+pom-module-web/e2e/reg*.spec.ts
+pom-module-web/e2e/gap*.spec.ts
+pom-module-web/e2e/v2*.spec.ts
+pom-module-web/e2e/ab*.spec.ts
+pom-module-web/e2e/fix-*
+pom-module-web/e2e/merge-*-fix.spec.ts
+pom-module-web/e2e/po-fix-*.spec.ts
+pom-module-web/e2e/po-tests-*.spec.ts
+pom-module-web/e2e/tax-issue-qa-*.spec.ts
+pom-module-web/e2e/gen-spec.js
+pom-module-web/e2e/write-spec.js
+pom-module-web/e2e/shots/
+pom-module-web/e2e/test-write.txt
+# 스크래치 스크립트/덤프 (루트 + pom-module-web)
+build-spec.*
+gen-spec*.js
+spec-gen-*.js
+writeSpec.js
+pom-module-web/verify-responsive.mjs
+pom-module-web/gfv.js
+pom-module-web/test.js
+pom-module-web/dist-check.html
+# 루트 임시 파일·데이터 덤프
+/_*
+/.commit-msg-tmp.txt
+/test.txt
+test-write.txt
+*_b64.txt
+*_base64.txt
+prod_excel*
+orders_test.xlsx
+
+# 로컬 개발용 Spring 설정 오버라이드 (접속정보 포함 — 커밋 금지)
+pom-module-api/config/
+
+# === 모바일 앱(Capacitor) ===
+# APK 는 빌드 산출물 — npm run app:android 가 public/downloads 에 복사한다
+pom-module-web/public/downloads/
+pom-module-web/android/app/build/
+pom-module-web/android/.gradle/
+pom-module-web/android/local.properties
+pom-module-web/ios/App/Pods/
+
+
+# 운영 비밀값·DB 덤프 — 서버로 옮기는 용도, 절대 커밋 금지
+deploy/secret/
+# 안드로이드 앱 이미지(아이콘·시작 화면)와 원본, Gradle 실행 파일 — 빠지면 APK 빌드가 실패한다(2026-10-07)
+!pom-module-web/android/app/src/main/res/**/*.png
+!pom-module-web/assets/*.png
+!pom-module-web/android/gradle/wrapper/gradle-wrapper.jar
+
+# 첨부파일 저장소(공지 첨부 등) — 로컬·서버 데이터, 커밋하지 않는다
+pom-module-api/uploads/

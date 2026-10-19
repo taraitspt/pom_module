@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  pom-api:
+    image: pom-module-api:latest
+    container_name: pom-api
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+      - "EXT_API_ALLOWED_ORIGIN_PATTERNS=${EXT_API_ALLOWED_ORIGIN_PATTERNS:-http://localhost:[*],http://127.0.0.1:[*]}"
+    restart: unless-stopped
+    networks:
+      - pom-network
+
+  pom-web:
+    image: pom-module-web:latest
+    container_name: pom-web
+    ports:
+      - "80:80"
+    depends_on:
+      - pom-api
+    restart: unless-stopped
+    networks:
+      - pom-network
+
+networks:
+  pom-network:
+    driver: bridge
