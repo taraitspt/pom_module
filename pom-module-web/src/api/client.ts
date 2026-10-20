@@ -59,7 +59,10 @@ apiClient.interceptors.response.use(
     if (error.response?.status === 401) {
       const originalRequest = error.config as InternalAxiosRequestConfig;
       const url = originalRequest.url ?? '';
+      // /public/** 은 비로그인 API 라 401 이 토큰 만료가 아니다(비밀번호 분실: 없는 계정 = AUTH_002 401).
+      // 로그아웃·이동시키면 화면이 오류 메시지 대신 로그인 페이지로 튄다.
       const skip = url.includes('/auth/login')
+        || url.startsWith('/public/')
         || NO_AUTO_LOGOUT_PATHS.some((p) => url.includes(p));
       if (!skip) {
         useAuthStore.getState().logout();
